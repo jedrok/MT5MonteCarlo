@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/logo/mt5_monte_carlo_logo.svg</file>
+        <file>assets/icons/play_button.svg</file>
+        <file>assets/icons/stop_button.svg</file>
+    </qresource>
+</RCC>

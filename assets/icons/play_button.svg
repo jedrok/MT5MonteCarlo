@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Play triangle with thick white outline and no fill -->
+  <path d="M 30 20 L 30 80 L 75 50 Z" 
+        fill="none" 
+        stroke="white" 
+        stroke-width="6" 
+        stroke-linejoin="round"/>
+</svg>

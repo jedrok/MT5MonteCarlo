@@ -1,0 +1,29 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="256" height="256" rx="56" fill="url(#grad)"/>
+  
+  <!-- Monte Carlo "M" wave symbol -->
+  <path d="M 70 180 Q 90 120, 110 140 Q 130 160, 150 100 Q 170 140, 190 120" 
+        stroke="#ffffff" 
+        stroke-width="16" 
+        fill="none" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        opacity="0.95"/>
+  
+  <!-- Secondary wave for depth (Monte Carlo simulation paths) -->
+  <path d="M 70 180 Q 90 130, 110 145 Q 130 155, 150 110 Q 170 135, 190 125" 
+        stroke="#ffffff" 
+        stroke-width="8" 
+        fill="none" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        opacity="0.3"/>
+</svg>
