@@ -326,9 +326,163 @@ ApplicationWindow  {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: statusBar.top
-        color: "#1a1d29"
+        color: "#151822"
         border.color: "#2d3139"
         border.width: 1
+
+        // left side panel
+        Rectangle {
+        id:leftPanel
+        width: 250
+        height: parent.height
+        color: "#151822"
+        border.color: "#2d3139"
+        border.width: 1
+
+        Flickable {
+            anchors.fill: parent
+            anchors.margins: 0
+            contentHeight: contentColumn.height
+            clip: true
+
+
+            Column {
+                id: contentColumn
+                width: parent.width
+                spacing: 0
+
+                // data source
+                Rectangle {
+                width:  parent.width
+                height: 120
+                color: "transparent"
+
+                Column {
+
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 12
+
+                    // section header
+                    Row {
+                        spacing: 6
+
+                        Image {
+                            id: dataSourceIcon
+                            width: 30
+                            height: 30
+                            source: "qrc:/assets/icons/sheet.png"
+                            anchors.verticalCenter: parent.verticalCenter
+
+                        }
+
+                        Text {
+                            text: "Data Source"
+                            font.pixelSize: 13
+                            font.weight: Font.Medium
+                            color: "#B3FFFFFF"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+                    }
+
+
+                    // opening file location
+                    Rectangle {
+                        width: parent.width
+                        height: 40
+                        color: openFileArea.containsMouse ? "#1e2235" : "#1a1d29"
+                        border.color: "#334155"
+                        border.width: 1
+                        radius: 4
+
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 8
+
+                            Image {
+                                id: openFileAreaIcon
+                                source: "qrc:/assets/icons/openfolder.png"
+                                width: 30
+                                height: 30
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Text {
+                                text: "Open File..."
+                                color: "#94a3b8"
+                                font.pixelSize: 12
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        MouseArea {
+                            id: openFileArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                console.log("Open file clicked")
+                                // file dialog here
+                            }
+                        }
+                     }
+                }
+             }
+
+            // divider line
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#2d3139"
+            }
+
+            // simulation parameters section
+            Rectangle {
+                width: parent.width
+                height: 420
+                color: "transparent"
+
+                Column {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 20
+
+                    // section header
+                    Row {
+                        spacing: 6
+
+                        Image {
+                            id: simParametersSectionIcon
+                            source: "qrc:/assets/icons/sim_params_icon.svg"
+                            width:30
+                            height: 30
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Text {
+                            text: "Simulation Parameters"
+                            font.pixelSize: 13
+                            font.weight: Font.Medium
+                            color: "#B3FFFFFF"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                    }
+
+
+
+                }
+
+
+            }
+
+
+
+                }
+
+            }
+
+        }
     }
 
 
