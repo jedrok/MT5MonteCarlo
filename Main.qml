@@ -319,7 +319,7 @@ ApplicationWindow  {
     }
 
 
-    // main content
+    // main content area
     Rectangle {
         id: mainContentArea
         anchors.top: toolBar.bottom
@@ -332,7 +332,7 @@ ApplicationWindow  {
 
         // left side panel
         Rectangle {
-        id:leftPanel
+        id:leftSidePanel
         width: 250
         height: parent.height
         color: "#151822"
@@ -342,25 +342,25 @@ ApplicationWindow  {
         Flickable {
             anchors.fill: parent
             anchors.margins: 0
-            contentHeight: contentColumn.height
             clip: true
 
 
             Column {
-                id: contentColumn
+                id: leftSidePanelContentColumn
                 width: parent.width
                 spacing: 0
+                height: implicitHeight
 
-                // data source
+                // data source section
                 Rectangle {
                 width:  parent.width
-                height: 120
+                height: 110
                 color: "transparent"
 
                 Column {
 
                     anchors.fill: parent
-                    anchors.margins: 15
+                    anchors.margins: 12
                     spacing: 12
 
                     // section header
@@ -389,7 +389,7 @@ ApplicationWindow  {
                     // opening file location
                     Rectangle {
                         width: parent.width
-                        height: 40
+                        height: 45
                         color: openFileArea.containsMouse ? "#1e2235" : "#1a1d29"
                         border.color: "#334155"
                         border.width: 1
@@ -439,17 +439,28 @@ ApplicationWindow  {
             // simulation parameters section
             Rectangle {
                 width: parent.width
-                height: 420
+                height: simParamsColumn.height + 24
                 color: "transparent"
 
                 Column {
-                    anchors.fill: parent
-                    anchors.margins: 15
-                    spacing: 20
+                    id:simParamsColumn
+                    width: parent.width
+                    height: implicitHeight
+                    anchors.margins: 12
+                    spacing: 8
 
-                    // section header
+                // spacer
+                    Item {
+                        width: parent.width
+                        height: 2
+                    }
+
+                    // simulation params section header
                     Row {
+                        width: parent.width
+                        anchors.margins: 12
                         spacing: 6
+                        leftPadding: 10
 
                         Image {
                             id: simParametersSectionIcon
@@ -466,24 +477,327 @@ ApplicationWindow  {
                             color: "#B3FFFFFF"
                             anchors.verticalCenter: parent.verticalCenter
                         }
+                    }
+
+                    // number of runs section
+                    Rectangle {
+                        width: parent.width
+                        height: childrenRect.height
+                        color: "transparent"
+
+
+                        Column {
+                            width: parent.width
+                            anchors.margins: 12
+                            spacing: 8
+
+                            //  label and value
+                            Row {
+                                width: parent.width
+                                spacing: 97
+                                leftPadding: 10
+                                rightPadding: 10
+
+                                Text {
+                                    text: "Number of Runs"
+                                    color: "#B3FFFFFF"
+                                    font.pixelSize: 13
+                                    horizontalAlignment: Text.AlignLeft
+                                }
+
+
+                                Text {
+                                    id: numOfRunsValueLabel
+                                    text: Math.round(numOfRunsSlider.value)
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: "#0ea5e9"
+                                    horizontalAlignment: Text.AlignRight
+                                }
+                            }
+
+                            // number of runs slider
+                            Slider {
+                                id: numOfRunsSlider
+                                from: 100
+                                to: 10000
+                                stepSize: 100
+                                value: 1000
+                                width: parent.width - 20
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                live: true
+
+                                background: Rectangle {
+                                    x: numOfRunsSlider.leftPadding
+                                    y: numOfRunsSlider.topPadding + numOfRunsSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 200
+                                    implicitHeight: 6
+                                    width: numOfRunsSlider.availableWidth
+                                    height: implicitHeight
+                                    radius: 3
+                                    color: "#2d3139"
+
+                                    Rectangle {
+                                        width: numOfRunsSlider.visualPosition * parent.width
+                                        height: parent.height
+                                        color: "#0ea5e9"
+                                        radius: 3
+                                    }
+                                }
+
+                                handle: Rectangle {
+                                    x: numOfRunsSlider.leftPadding + numOfRunsSlider.visualPosition * (numOfRunsSlider.availableWidth - width)
+                                    y: numOfRunsSlider.topPadding + numOfRunsSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 18
+                                    implicitHeight: 18
+                                    radius: 9
+                                    color: numOfRunsSlider.pressed ? "#0284c7" : "#0ea5e9"
+                                    border.color: "#ffffff"
+                                    border.width: 2
+                                }
+
+                            }
+
+                            // min max labels
+                            Row {
+                                width: parent.width - 20
+                                anchors.horizontalCenter: parent.horizontalCenter
+
+                                Text {
+                                    text: "100"
+                                    color: "#777"
+                                    font.pixelSize: 12
+                                    width: parent.width / 2
+                                    horizontalAlignment: Text.AlignLeft
+                                }
+
+                                Text {
+                                    text: "10000"
+                                    color: "#777"
+                                    font.pixelSize: 12
+                                    width: parent.width / 2
+                                    horizontalAlignment: Text.AlignRight
+                                }
+                            }
+                        }
+
+                    }
+
+                    // divider line
+                    Rectangle {
+                        width: parent.width - 20
+                        height: 1
+                        color: "#2d3139"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+
+
+
+
+                    // confidence level section
+                    Rectangle {
+                        width: parent.width
+                        height: childrenRect.height
+                        color: "transparent"
+
+
+                        Column {
+                            width: parent.width
+                            anchors.margins: 12
+                            spacing: 8
+
+                            // label and Value
+                            Row {
+                                width: parent.width
+                                spacing: 97
+                                leftPadding: 10
+                                rightPadding: 10
+
+                                Text {
+                                    text: "Confidence Level"
+                                    color: "#B3FFFFFF"
+                                    font.pixelSize: 13
+                                    horizontalAlignment: Text.AlignLeft
+                                }
+
+
+                                Text {
+                                    id: confidenceValueLabel
+                                    text: Math.round(confidenceLevelSlider.value) + "%"
+                                    font.pixelSize: 13
+                                    font.bold: true
+                                    color: "#0ea5e9"
+                                    horizontalAlignment: Text.AlignRight
+                                }
+                            }
+
+                            // confidence level slider
+                            Slider {
+                                id: confidenceLevelSlider
+                                from: 80
+                                to: 99
+                                stepSize: 1
+                                value: 95
+                                width: parent.width - 20
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                live: true
+
+                                background: Rectangle {
+                                    x: confidenceLevelSlider.leftPadding
+                                    y: confidenceLevelSlider.topPadding + confidenceLevelSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 200
+                                    implicitHeight: 6
+                                    width: confidenceLevelSlider.availableWidth
+                                    height: implicitHeight
+                                    radius: 3
+                                    color: "#2d3139"
+
+                                    Rectangle {
+                                        width: confidenceLevelSlider.visualPosition * parent.width
+                                        height: parent.height
+                                        color: "#0ea5e9"
+                                        radius: 3
+                                    }
+                                }
+
+                                handle: Rectangle {
+                                    x: confidenceLevelSlider.leftPadding + confidenceLevelSlider.visualPosition * (confidenceLevelSlider.availableWidth - width)
+                                    y: confidenceLevelSlider.topPadding + confidenceLevelSlider.availableHeight / 2 - height / 2
+                                    implicitWidth: 18
+                                    implicitHeight: 18
+                                    radius: 9
+                                    color: confidenceLevelSlider.pressed ? "#0284c7" : "#0ea5e9"
+                                    border.color: "#ffffff"
+                                    border.width: 2
+                                }
+
+                            }
+
+                            // confidence level min max labels
+                            Row {
+                                width: parent.width - 20
+                                anchors.horizontalCenter: parent.horizontalCenter
+
+                                Text {
+                                    text: "80%"
+                                    color: "#777"
+                                    font.pixelSize: 12
+                                    width: parent.width / 2
+                                    horizontalAlignment: Text.AlignLeft
+                                }
+
+                                Text {
+                                    text: "90%"
+                                    color: "#777"
+                                    font.pixelSize: 12
+                                    width: parent.width / 2
+                                    horizontalAlignment: Text.AlignRight
+                                }
+                            }
+                        }
 
                     }
 
 
 
-                }
+                    // divider line
+                    Rectangle {
+                        width: parent.width - 20
+                        height: 1
+                        color: "#2d3139"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
 
+
+                    // randomize order section
+                    Rectangle {
+                        width: parent.width
+                        height: 30
+                        color: "transparent"
+
+                        Row {
+                            width: parent.width
+                            anchors.verticalCenter: parent.verticalCenter
+                            leftPadding: 10
+                            rightPadding: 10
+
+                            Text {
+                                text: "Randomize Order"
+                                color: "#B3FFFFFF"
+                                font.pixelSize: 13
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                            Item {
+                                width: parent.width - 170
+                                height: 1
+                            }
+
+                            // randomize order toggle switch
+                            Rectangle {
+                                id: randomizeOrderToggleBackground
+                                width: 40
+                                height: 20
+                                radius: 13
+                                color: randomizeOrderToggleSwitch.checked ? "#0ea5e9" : "#2d3139"
+                                border.color: randomizeOrderToggleSwitch.checked ? "#0284c7" : "#1e293b"
+                                border.width: 1
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 200 }
+                                }
+
+                                Rectangle {
+                                    id: randomizeOrderToggleHandle
+                                    width: 18
+                                    height: 18
+                                    radius: 10
+                                    color: "#e5e5e5"
+                                    x: randomizeOrderToggleSwitch.checked ? parent.width - width - 3 : 3
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    Behavior on x {
+                                        NumberAnimation { duration: 200; easing.type: Easing.InOutQuad }
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: randomizeOrderToggleSwitch
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    property bool checked: false
+
+                                    onClicked: {
+                                        checked = !checked
+                                        console.log("Randomize Order:", checked)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // divider line
+                    Rectangle {
+                        width: parent.width - 20
+                        height: 1
+                        color: "#2d3139"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
 
             }
 
 
 
-                }
-
             }
+
+          }
 
         }
+
     }
+
 
 
 
