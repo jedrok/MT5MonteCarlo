@@ -20,6 +20,8 @@ qt_add_qml_module(appMT5MonteCarlo
         Main.qml
     RESOURCES
         resources.qrc
+        QML_FILES
+        QML_FILES MetricCard.qml
 
 
 )

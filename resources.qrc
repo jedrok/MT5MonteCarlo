@@ -1,10 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/icons/play_button.svg</file>
-        <file>assets/icons/stop_button.svg</file>
         <file>assets/logo/mt5_monte_carlo_logo.svg</file>
-        <file>assets/icons/sheet.png</file>
-        <file>assets/icons/openfolder.png</file>
         <file>assets/icons/sim_params_icon.svg</file>
+        <file>assets/icons/empty_state.svg</file>
+        <file>assets/icons/median_return_icon.svg</file>
+        <file>assets/icons/play_button_icon.svg</file>
+        <file>assets/icons/stop_button_icon.svg</file>
+        <file>assets/icons/data_source_icon.svg</file>
+        <file>assets/icons/open_folder_icon.svg</file>
     </qresource>
 </RCC>

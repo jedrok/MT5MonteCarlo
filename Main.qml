@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Effects
+import QtQuick.Layouts
+import QtCharts
+
 
 
 ApplicationWindow  {
@@ -194,7 +197,6 @@ ApplicationWindow  {
                     }
                 }
 
-                // inner glow effect
                 Rectangle {
                     anchors.fill: parent
                     radius: parent.radius
@@ -217,7 +219,7 @@ ApplicationWindow  {
                         id: runImage
                         width: 20
                         height: 20
-                        source: "qrc:/assets/icons/play_button.svg"
+                        source: "qrc:/assets/icons/play_button_icon.svg"
                         anchors.verticalCenter: parent.verticalCenter
                         smooth: true
                         opacity: runButton.isSimulating ? 0.4 : 1.0
@@ -251,6 +253,8 @@ ApplicationWindow  {
                         console.log("run simulation clicked")
                         runButton.isSimulating = true
                         // gonna start simulation here
+                        // Simulate completion after delay (replace with actual simulation completion signal)
+
                     }
                 }
 
@@ -291,7 +295,7 @@ ApplicationWindow  {
                 Image {
                     width: 20
                     height: 20
-                    source: "qrc:/assets/icons/stop_button.svg"
+                    source: "qrc:/assets/icons/stop_button_icon.svg"
                     anchors.centerIn: parent
                     smooth: true
                     opacity: runButton.isSimulating ? 0.9 : 0.6
@@ -371,7 +375,7 @@ ApplicationWindow  {
                             id: dataSourceIcon
                             width: 30
                             height: 30
-                            source: "qrc:/assets/icons/sheet.png"
+                            source: "qrc:/assets/icons/data_source_icon.svg"
                             anchors.verticalCenter: parent.verticalCenter
 
                         }
@@ -401,7 +405,7 @@ ApplicationWindow  {
 
                             Image {
                                 id: openFileAreaIcon
-                                source: "qrc:/assets/icons/openfolder.png"
+                                source: "qrc:/assets/icons/open_folder_icon.svg"
                                 width: 30
                                 height: 30
                                 anchors.verticalCenter: parent.verticalCenter
@@ -491,7 +495,6 @@ ApplicationWindow  {
                             anchors.margins: 12
                             spacing: 8
 
-                            //  label and value
                             Row {
                                 width: parent.width
                                 spacing: 97
@@ -788,16 +791,344 @@ ApplicationWindow  {
 
             }
 
-
-
             }
 
           }
 
         }
 
+
+        // graph and metrics area
+            Rectangle {
+                id: graphArea
+                anchors.left: leftSidePanel.right
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                color: "#1a1d29"
+
+
+
+                Rectangle {
+                    id: emptyState
+                    anchors.fill: parent
+                    //visible: true // dont forget set false when data is loaded
+                    //visible: opacity > 0
+                    visible: false   // temporary till i finish the results ui
+                    //opacity: runButton.isSimulating ? 0 : 1
+
+                    Behavior on opacity {
+                       NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
+                    }
+
+                    ColumnLayout {
+                        anchors.centerIn: parent
+                        spacing: 5
+
+                        Image {
+                            id: emptyStateIcon
+                            source: "qrc:/assets/icons/empty_state.svg"
+                            width: 50
+                            height: 50
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Text {
+                            text: "No Data"
+                            color: "#64748b"
+                            font.pixelSize: 15
+                            font.weight: Font.Medium
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Text {
+                            text: "Open a file and run simulation to view results"
+                            color: "#64748b"
+                            font.pixelSize: 15
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+                    }
+                }
+
+
+
+                // equity curve and metrics results area
+                Rectangle {
+                     id: resultsArea
+                     anchors.fill: parent
+                     visible: opacity > 0
+                     //opacity: 0  // Start hidden then set to 1 when simulation completes
+                     opacity:1 // temp so i can finish the results ui
+                     color: "transparent"
+
+
+                     Behavior on opacity {
+                         NumberAnimation { duration: 500; easing.type: Easing.InOutQuad }
+                     }
+
+
+                     RowLayout {
+                         id:resultsRow
+                         anchors.fill: parent
+                         spacing: 5
+
+                         // equity curve area
+                         Rectangle {
+                             id: equityCurveContainer
+                             Layout.fillWidth: true
+                             Layout.fillHeight: true
+                             Layout.margins: 10
+                             color: "transparent"
+
+                             ColumnLayout {
+                                 anchors.fill: parent
+                                 Layout.margins: 10
+                                 spacing: 15
+
+
+                                 RowLayout {
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: 30
+                                    Layout.margins: 5
+
+                                     Text {
+                                         id: titleText
+                                         text: "Equity Curves - Monte Carlo Simulation"
+                                         color: "#B3FFFFFF"
+                                         font.pixelSize: 14
+                                         font.weight: Font.Medium
+                                         verticalAlignment: Text.AlignVCenter
+                                     }
+
+                                     Item {
+                                          Layout.fillWidth: true
+                                     }
+
+                                     RowLayout {
+                                         id: legendGroup
+                                         spacing: 20
+
+                                         Row {
+                                             spacing: 6
+
+                                             Rectangle {
+                                                 width: 30
+                                                 height: 5
+                                                 color: "#06b6d4"
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+
+                                             Text {
+                                                 text: "Median"
+                                                 color: "#94a3b8"
+                                                 font.pixelSize: 12
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+                                         }
+
+                                         Row {
+                                             spacing: 6
+
+                                             Rectangle {
+                                                 width: 30
+                                                 height: 5
+                                                 color: "#ec4899"
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+
+                                             Text {
+                                                 text: Math.round(confidenceLevelSlider.value) + "% CL"
+                                                 color: "#94a3b8"
+                                                 font.pixelSize: 12
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+                                         }
+
+                                         Row {
+                                             spacing: 6
+
+                                             Rectangle {
+                                                 width: 30
+                                                 height: 5
+                                                 color: "#5b7a9d"
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+
+                                             Text {
+                                                 text: "Runs"
+                                                 color: "#94a3b8"
+                                                 font.pixelSize: 12
+                                                 anchors.verticalCenter: parent.verticalCenter
+                                             }
+                                         }
+                                     }
+                                 }
+
+                             Rectangle {
+                                 id:equityCurveGraphArea
+                                 color: "#151822"
+                                 border.color: "#2d3139"
+                                 radius: 5
+                                 Layout.fillWidth: true
+                                 Layout.fillHeight: true
+
+
+                             // will do the graph here later
+
+
+                               }
+
+                             }
+
+                         }
+
+
+                 // metrics tab
+                 Rectangle {
+                     id: rightMetricsPanel
+                     Layout.preferredWidth: 350
+                     Layout.fillHeight: true
+                     Layout.margins: 10
+                     color: "transparent"
+
+                     ColumnLayout {
+                         anchors.fill: parent
+                         spacing: 10
+
+                         Text {
+                             text: "Simulation Results"
+                             color: "#B3FFFFFF"
+                             font.pixelSize: 14
+                             font.weight: Font.Medium
+                             Layout.topMargin: 10
+                             Layout.leftMargin: 10
+                         }
+
+
+                         RowLayout {
+                             id: tabBar
+                             spacing: 10
+                             Layout.fillWidth: true
+                             Layout.leftMargin: 10
+
+                             ButtonGroup { id: tabGroup } //only one tab button must be active at a time
+
+                             Repeater {
+                                 model: ["Overview", "Returns", "Risk", "Trades"]
+
+                                 delegate: RadioButton {
+                                     text: modelData
+                                     ButtonGroup.group: tabGroup
+                                     checked: index === 0
+                                     indicator.visible: false
+
+                                     contentItem: Text {
+                                         text: parent.text
+                                         font.pixelSize: 13
+                                         font.weight: Font.Medium
+                                         color: parent.checked ? "#ffffff" : "#94a3b8"
+                                         horizontalAlignment: Text.AlignHCenter
+                                         verticalAlignment: Text.AlignVCenter
+                                     }
+
+                                     background: Rectangle {
+                                         color: parent.checked ? "#0ea5e9" : "transparent"
+                                         radius: 15
+                                         implicitWidth: 80
+                                         implicitHeight: 30
+                                     }
+                                 }
+                             }
+                         }
+
+
+                         StackLayout {
+                             id: tabContent
+                             Layout.fillWidth: true
+                             Layout.fillHeight: true
+                             currentIndex: tabGroup.checkedButton ? tabGroup.buttons.indexOf(tabGroup.checkedButton) : 0
+
+                             Flickable {
+                                  id: overviewPage
+                                  clip: true
+                                  contentHeight: overviewLayout.height
+                                  Layout.fillWidth: true
+                                  Layout.fillHeight: true
+
+                                  ColumnLayout {
+                                      id: overviewLayout
+                                      anchors.fill: parent
+                                      anchors.leftMargin: 10
+                                      anchors.rightMargin: 10
+                                      spacing: 15
+
+
+                                      MetricCard {
+                                          title: "Simulations"
+                                          value: "100"
+                                          valueColor: "#8b5cf6"
+                                      }
+                                      MetricCard {
+                                          title: "Total Trades"
+                                          value: "156"
+                                          valueColor: "#8b5cf6"
+                                      }
+                                      MetricCard {
+                                          title: "Median Return"
+                                          value: "+4.62%"
+                                          valueColor: "#22c55e"
+                                          iconSource: "qrc:/assets/icons/median_return_icon.svg"
+                                      }
+                                      MetricCard {
+                                          title: "Sharpe Ratio"
+                                          value: "0.28"
+                                      }
+                                      MetricCard {
+                                          title: "Risk of Ruin"
+                                          value: "0.00%"
+                                      }
+                                      MetricCard {
+                                          title: "CAR/MDD Ratio"
+                                          value: "2.1"
+                                          valueColor:"#0ea5e9"
+                                      }
+                                  }
+                              }
+
+                             Rectangle {
+                                 color: "transparent"
+                                 Text {
+                                     anchors.centerIn: parent
+                                     text: "Returns Content Area"
+                                     color: "#94a3b8"
+                                 }
+                             }
+
+                             Rectangle {
+                                 color: "transparent"
+                                 Text {
+                                     anchors.centerIn: parent
+                                     text: "Risk Content Area"
+                                     color: "#94a3b8"
+                                 }
+                             }
+
+                             Rectangle {
+                                 color: "transparent"
+                                 Text {
+                                     anchors.centerIn: parent
+                                     text: "Trades Content Area"
+                                     color: "#94a3b8"
+                                 }
+                             }
+                         }
+                     }
+                }
+            }
+         }
     }
 
+}
 
 
 
