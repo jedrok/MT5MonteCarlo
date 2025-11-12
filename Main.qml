@@ -1049,145 +1049,175 @@ ApplicationWindow  {
                              currentIndex: tabGroup.checkedButton ? tabGroup.buttons.indexOf(tabGroup.checkedButton) : 0
 
                              Flickable {
-                                  id: overviewPage
-                                  clip: true
-                                  contentHeight: overviewLayout.height
-                                  Layout.fillWidth: true
-                                  Layout.fillHeight: true
+                                 id: overviewPage
+                                 clip: true
+                                 contentHeight: overviewLayout.height
+                                 Layout.fillWidth: true
+                                 Layout.fillHeight: true
 
-                                  ColumnLayout {
-                                      id: overviewLayout
-                                      anchors.fill: parent
-                                      anchors.leftMargin: 10
-                                      anchors.rightMargin: 10
-                                      spacing: 15
-
-
-                                      MetricCard {
-                                          title: "Simulations"
-                                          value: "100"
-                                          valueColor: "#8b5cf6"
-                                      }
-                                      MetricCard {
-                                          title: "Total Trades"
-                                          value: "156"
-                                          valueColor: "#8b5cf6"
-                                      }
-                                      MetricCard {
-                                          title: "Median Return"
-                                          value: "+4.62%"
-                                          valueColor: "#10b981"
-                                          iconSource: "qrc:/assets/icons/median_return_icon.svg"
-                                      }
-                                      MetricCard {
-                                          title: "Sharpe Ratio"
-                                          value: "0.28"
-                                          valueColor: "#f59e0b"
-                                      }
-                                      MetricCard {
-                                          title: "Risk of Ruin"
-                                          value: "0.00%"
-                                          valueColor: "#ef4444"
-                                      }
-                                      MetricCard {
-                                          title: "CAR/MDD Ratio"
-                                          value: "2.1"
-                                          valueColor:"#0ea5e9"
-                                      }
-                                  }
-                              }
-
-
-                             Flickable {
-                                  clip: true
-                                  contentHeight: overviewLayout.height
-                                  Layout.fillWidth: true
-                                  Layout.fillHeight: true
-
-                                  ColumnLayout {
-
-                                      anchors.fill: parent
-                                      anchors.leftMargin: 10
-                                      anchors.rightMargin: 10
-                                      spacing: 15
-
+                                 ColumnLayout {
+                                     id: overviewLayout
+                                     anchors.fill: parent
+                                     anchors.leftMargin: 10
+                                     anchors.rightMargin: 10
+                                     spacing: 15
 
                                      MetricCard {
-                                         title: "Average Return"
-                                         value: "+3.85%"
-                                         valueColor: "#10b981"
-                                     }
-                                     MetricCard {
-                                         title: "Best Case Return"
-                                         value: "+12.34%"
-                                         valueColor: "#10b981"
-                                     }
-                                     MetricCard {
-                                         title: "Worst Case Return"
-                                         value: "-5.67%"
-                                         valueColor: "#ef4444"
-                                     }
-                                     MetricCard {
-                                         title: "Std Deviation"
-                                         value: "8.42%"
-                                         valueColor: "#f59e0b"
-                                     }
-                                     MetricCard {
-                                         title: "Profit Factor"
-                                         value: "1.45"
-                                         valueColor: "#0ea5e9"
-                                     }
-                                     MetricCard {
-                                         title: "Win Rate"
-                                         value: "58.3%"
+                                         title: "Simulations Run"
+                                         value: "100"
                                          valueColor: "#8b5cf6"
+                                         iconSource: "qrc:/assets/icons/simulation_metric_icon.svg"
                                      }
-                                 }
-                             }
-
-
-
-                             Flickable {
-                              clip: true
-                              contentHeight: overviewLayout.height
-                              Layout.fillWidth: true
-                              Layout.fillHeight: true
-
-                              ColumnLayout {
-                                  anchors.fill: parent
-                                  anchors.leftMargin: 10
-                                  anchors.rightMargin: 10
-                                  spacing: 15
 
                                      MetricCard {
-                                         title: "Max Drawdown"
+                                         title: "Median Return"
+                                         value: "+4.62%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/median_return_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Median Max Drawdown"
                                          value: "-18.5%"
-                                         valueColor: "#ef4444"
-                                     }
-                                     MetricCard {
-                                         title: "Avg Drawdown"
-                                         value: "-7.2%"
                                          valueColor: "#f59e0b"
+                                         iconSource: "qrc:/assets/icons/median_max_dd.svg"
                                      }
+
                                      MetricCard {
-                                         title: "Max Drawdown Duration"
-                                         value: "45 days"
-                                         valueColor: "#ef4444"
+                                         title: "Sharpe Ratio (Median)"
+                                         value: "0.92"
+                                         valueColor: "#f59e0b"    // #0ea5e9 is blue
+                                         iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
                                      }
+
                                      MetricCard {
-                                         title: "Value at Risk (95%)"
-                                         value: "-12.3%"
-                                         valueColor: "#f59e0b"
+                                         title: "Risk of Ruin"
+                                         value: "0.00%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/risk_of_ruin_icon.svg"
                                      }
-                                     MetricCard {
-                                         title: "Sortino Ratio"
-                                         value: "0.42"
-                                         valueColor: "#0ea5e9"
-                                     }
+
                                      MetricCard {
                                          title: "Calmar Ratio"
+                                         value: "2.1"
+                                         valueColor: "#8b5cf6"
+                                         iconSource: "qrc:/assets/icons/calmar_ratio.svg"
+                                     }
+                                 }
+                             }
+
+
+                             Flickable {
+                                 id: returnsLayout
+                                 clip: true
+                                 contentHeight: overviewLayout.height
+                                 Layout.fillWidth: true
+                                 Layout.fillHeight: true
+
+                                 ColumnLayout {
+                                     anchors.fill: parent
+                                     anchors.leftMargin: 10
+                                     anchors.rightMargin: 10
+                                     spacing: 15
+
+                                     MetricCard {
+                                         title: "Median Return"
+                                         value: "+3.85%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/percent_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Mean Return"
+                                         value: "+4.12%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/percent_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Best Case (99th %ile)"
+                                         value: "+15.4%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/percent_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Worst Case (1st %ile)"
+                                         value: "-6.8%"
+                                         valueColor: "#ef4444"
+                                         iconSource: "qrc:/assets/icons/trending_down_red_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Profit Factor (Median)"
+                                         value: "1.45"
+                                         valueColor: "#0ea5e9"
+                                         iconSource: "qrc:/assets/icons/profit_factor_trending_up.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Sharpe Ratio (Median)"
+                                         value: "1.12"
+                                         valueColor: "#f59e0b"
+                                         iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
+                                     }
+                                 }
+                             }
+
+
+                             Flickable {
+                                 id: riskLayout
+                                 clip: true
+                                 contentHeight: overviewLayout.height
+                                 Layout.fillWidth: true
+                                 Layout.fillHeight: true
+
+                                 ColumnLayout {
+                                     anchors.fill: parent
+                                     anchors.leftMargin: 10
+                                     anchors.rightMargin: 10
+                                     spacing: 15
+
+                                     MetricCard {
+                                         title: "Median Max Drawdown"
+                                         value: "-18.5%"
+                                         valueColor: "#f59e0b"
+                                         iconSource: "qrc:/assets/icons/median_max_dd.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Best Case Max Drawdown"
+                                         value: "-7.2%"
+                                         valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/best_case_dd.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Worst Case Max Drawdown (95th %ile)"
+                                         value: "-32.8%"
+                                         valueColor: "#ef4444"
+                                         iconSource: "qrc:/assets/icons/trending_down_red_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Value at Risk (95%)"
+                                         value: "-4.5%"
+                                         valueColor: "#ef4444"
+                                         iconSource: "qrc:/assets/icons/worst_case_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Risk of Ruin"
+                                         value: "0.42%"
+                                         valueColor: "#ef4444"
+                                         iconSource: "qrc:/assets/icons/worst_case_icon.svg"
+                                     }
+
+                                     MetricCard {
+                                         title: "Calmar Ratio (Median)"
                                          value: "0.25"
                                          valueColor: "#8b5cf6"
+                                         iconSource: "qrc:/assets/icons/calmar_ratio.svg"
                                      }
                                  }
                              }
@@ -1195,49 +1225,62 @@ ApplicationWindow  {
 
 
                              Flickable {
-                              clip: true
-                              contentHeight: overviewLayout.height
-                              Layout.fillWidth: true
-                              Layout.fillHeight: true
+                                 id: tradesLayout
+                                 clip: true
+                                 contentHeight: overviewLayout.height
+                                 Layout.fillWidth: true
+                                 Layout.fillHeight: true
 
-                              ColumnLayout {
-                                  anchors.fill: parent
-                                  anchors.leftMargin: 10
-                                  anchors.rightMargin: 10
-                                  spacing: 15
+                                 ColumnLayout {
+                                     anchors.fill: parent
+                                     anchors.leftMargin: 10
+                                     anchors.rightMargin: 10
+                                     spacing: 15
 
                                      MetricCard {
                                          title: "Total Trades"
                                          value: "156"
                                          valueColor: "#8b5cf6"
+                                         iconSource: "qrc:/assets/icons/total_trade_metric_icon.svg"
                                      }
+
                                      MetricCard {
-                                         title: "Winning Trades"
-                                         value: "91"
+                                         title: "Win Rate (Median)"
+                                         value: "58%"
                                          valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/target_green_icon.svg"
                                      }
+
                                      MetricCard {
-                                         title: "Losing Trades"
-                                         value: "65"
-                                         valueColor: "#ef4444"
+                                         title: "Avg R/R Ratio"
+                                         value: "1.8"
+                                         valueColor: "#06b6d4"
+                                         iconSource: "qrc:/assets/icons/avg_rr_icon.svg"
                                      }
+
                                      MetricCard {
-                                         title: "Avg Win"
-                                         value: "+$245"
+                                         title: "Expectancy per Trade"
+                                         value: "+$45"
                                          valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/arrow_outward_icon.svg"
                                      }
+
                                      MetricCard {
                                          title: "Avg Loss"
                                          value: "-$180"
                                          valueColor: "#ef4444"
+                                         iconSource: "qrc:/assets/icons/worst_case_icon.svg"
                                      }
+
                                      MetricCard {
                                          title: "Largest Win"
                                          value: "+$1,250"
                                          valueColor: "#10b981"
+                                         iconSource: "qrc:/assets/icons/arrow_outward_icon.svg"
                                      }
                                  }
                              }
+
 
                          }
                      }

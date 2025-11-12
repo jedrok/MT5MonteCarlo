@@ -32,7 +32,7 @@ Rectangle {
                 id: titleText
                 text: "Card Title"
                 color: "#94a3b8"
-                font.pixelSize: 12
+                font.pixelSize: 13
                 Layout.alignment: Qt.AlignVCenter
             }
 
@@ -57,7 +57,7 @@ Rectangle {
             id: valueText
             text: "Card Value"
             color: "#f0f9ff"
-            font.pixelSize: 16
+            font.pixelSize: 15
             font.weight: Font.Bold
         }
     }

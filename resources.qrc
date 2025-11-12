@@ -8,5 +8,19 @@
         <file>assets/icons/stop_button_icon.svg</file>
         <file>assets/icons/data_source_icon.svg</file>
         <file>assets/icons/open_folder_icon.svg</file>
+        <file>assets/icons/trending_down_red_icon.svg</file>
+        <file>assets/icons/total_trade_metric_icon.svg</file>
+        <file>assets/icons/simulation_metric_icon.svg</file>
+        <file>assets/icons/sharpe_ratio_metric_icon.svg</file>
+        <file>assets/icons/risk_of_ruin_icon.svg</file>
+        <file>assets/icons/percent_icon.svg</file>
+        <file>assets/icons/target_green_icon.svg</file>
+        <file>assets/icons/worst_case_icon.svg</file>
+        <file>assets/icons/arrow_outward_icon.svg</file>
+        <file>assets/icons/avg_rr_icon.svg</file>
+        <file>assets/icons/profit_factor_trending_up.svg</file>
+        <file>assets/icons/median_max_dd.svg</file>
+        <file>assets/icons/best_case_dd.svg</file>
+        <file>assets/icons/calmar_ratio.svg</file>
     </qresource>
 </RCC>
