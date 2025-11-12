@@ -3,8 +3,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Effects
 import QtQuick.Layouts
-import QtCharts
-
+import QtGraphs
 
 
 ApplicationWindow  {
@@ -950,7 +949,7 @@ ApplicationWindow  {
                                              Rectangle {
                                                  width: 30
                                                  height: 5
-                                                 color: "#5b7a9d"
+                                                 color: "#7b68ee"
                                                  anchors.verticalCenter: parent.verticalCenter
                                              }
 
@@ -972,11 +971,195 @@ ApplicationWindow  {
                                  Layout.fillWidth: true
                                  Layout.fillHeight: true
 
-                             // will do the graph here later
+
+                                 GraphsView {
+                                         id: graphView
+                                         anchors.fill: parent
+                                         anchors.margins: 20
+                                         anchors.bottomMargin: 20
+                                         anchors.leftMargin: 50
+
+                                         theme: GraphsTheme {
+                                             theme: GraphsTheme.Theme.UserDefined
+                                             colorScheme: GraphsTheme.ColorScheme.Dark
+                                             backgroundColor: "#151822"
+                                             grid.mainColor: "#1e2531"
+                                             grid.subColor: "transparent"
+                                             labelTextColor: "#64748b"
+                                             plotAreaBackgroundColor: "#151822"
+                                             gridVisible: true
+                                         }
+
+
+                                         axisX: ValueAxis {
+                                             id: axisX
+                                             min: 0
+                                             max: 100
+                                             labelFormat: "%.0f"
+                                         }
+
+                                         axisY: ValueAxis {
+                                             id: axisY
+                                             min: 9000
+                                             max: 15000
+                                             labelFormat: "$%.0f"
+                                         }
+
+                                        // sample runs
+                                       SplineSeries {
+                                           color: "#7b68ee"
+                                           width: 1
+                                           opacity: 0.7
+
+                                           XYPoint { x: 0; y: 10000 }
+                                           XYPoint { x: 10; y: 10150 }
+                                           XYPoint { x: 20; y: 10050 }
+                                           XYPoint { x: 30; y: 10300 }
+                                           XYPoint { x: 40; y: 10200 }
+                                           XYPoint { x: 50; y: 10500 }
+                                           XYPoint { x: 60; y: 10400 }
+                                           XYPoint { x: 70; y: 10700 }
+                                           XYPoint { x: 80; y: 10800 }
+                                           XYPoint { x: 90; y: 11000 }
+                                           XYPoint { x: 100; y: 10900 }
+                                       }
+
+
+                                       SplineSeries {
+                                           color: "#7b68ee"
+                                           width: 1
+                                           opacity: 0.7
+
+                                           XYPoint { x: 0; y: 10000 }
+                                           XYPoint { x: 10; y: 10250 }
+                                           XYPoint { x: 20; y: 10150 }
+                                           XYPoint { x: 30; y: 10500 }
+                                           XYPoint { x: 40; y: 10400 }
+                                           XYPoint { x: 50; y: 10700 }
+                                           XYPoint { x: 60; y: 10600 }
+                                           XYPoint { x: 70; y: 10900 }
+                                           XYPoint { x: 80; y: 11000 }
+                                           XYPoint { x: 90; y: 11200 }
+                                           XYPoint { x: 100; y: 11100 }
+                                       }
+
+
+                                       SplineSeries {
+                                           color: "#7b68ee"
+                                           width: 1
+                                           opacity: 0.7
+
+                                           XYPoint { x: 0; y: 10000 }
+                                           XYPoint { x: 10; y: 9900 }
+                                           XYPoint { x: 20; y: 9950 }
+                                           XYPoint { x: 30; y: 10200 }
+                                           XYPoint { x: 40; y: 10100 }
+                                           XYPoint { x: 50; y: 10400 }
+                                           XYPoint { x: 60; y: 10300 }
+                                           XYPoint { x: 70; y: 10600 }
+                                           XYPoint { x: 80; y: 10700 }
+                                           XYPoint { x: 90; y: 10900 }
+                                           XYPoint { x: 100; y: 10800 }
+                                       }
+
+
+                                       SplineSeries {
+                                           color: "#7b68ee"
+                                           width: 1
+                                           opacity: 0.7
+
+                                           XYPoint { x: 0; y: 10000 }
+                                           XYPoint { x: 10; y: 10100 }
+                                           XYPoint { x: 20; y: 10200 }
+                                           XYPoint { x: 30; y: 10400 }
+                                           XYPoint { x: 40; y: 10500 }
+                                           XYPoint { x: 50; y: 10800 }
+                                           XYPoint { x: 60; y: 10700 }
+                                           XYPoint { x: 70; y: 11000 }
+                                           XYPoint { x: 80; y: 11100 }
+                                           XYPoint { x: 90; y: 11300 }
+                                           XYPoint { x: 100; y: 11200 }
+                                       }
+
+
+                                       SplineSeries {
+                                           color: "#7b68ee"
+                                           width: 1
+                                           opacity: 0.7
+
+                                           XYPoint { x: 0; y: 10000 }
+                                           XYPoint { x: 10; y: 10050 }
+                                           XYPoint { x: 20; y: 10100 }
+                                           XYPoint { x: 30; y: 10350 }
+                                           XYPoint { x: 40; y: 10250 }
+                                           XYPoint { x: 50; y: 10550 }
+                                           XYPoint { x: 60; y: 10450 }
+                                           XYPoint { x: 70; y: 10750 }
+                                           XYPoint { x: 80; y: 10850 }
+                                           XYPoint { x: 90; y: 11050 }
+                                           XYPoint { x: 100; y: 10950 }
+                                       }
 
 
 
-                               }
+                                         SplineSeries {
+                                             id: confidenceSeries
+                                             color: "#ec4899"
+                                             width: 2
+
+                                             XYPoint { x: 0; y: 10000 }
+                                             XYPoint { x: 10; y: 10150 }
+                                             XYPoint { x: 20; y: 10250 }
+                                             XYPoint { x: 30; y: 10400 }
+                                             XYPoint { x: 40; y: 10500 }
+                                             XYPoint { x: 50; y: 10700 }
+                                             XYPoint { x: 60; y: 10850 }
+                                             XYPoint { x: 70; y: 11000 }
+                                             XYPoint { x: 80; y: 11200 }
+                                             XYPoint { x: 90; y: 11400 }
+                                             XYPoint { x: 100; y: 11600 }
+                                         }
+
+                                         SplineSeries {
+                                             id: medianSeries
+                                             color: "#06b6d4"
+                                             width: 3
+
+                                             XYPoint { x: 0; y: 10000 }
+                                             XYPoint { x: 10; y: 10500 }
+                                             XYPoint { x: 20; y: 10800 }
+                                             XYPoint { x: 30; y: 11200 }
+                                             XYPoint { x: 40; y: 11500 }
+                                             XYPoint { x: 50; y: 12000 }
+                                             XYPoint { x: 60; y: 12400 }
+                                             XYPoint { x: 70; y: 12900 }
+                                             XYPoint { x: 80; y: 13300 }
+                                             XYPoint { x: 90; y: 13800 }
+                                             XYPoint { x: 100; y: 14200 }
+                                         }
+                                     }
+
+                                     Text {
+                                         text: "Equity ($)"
+                                         color: "#64748b"
+                                         font.pixelSize: 12
+                                         rotation: -90
+                                         anchors.left: parent.left
+                                         anchors.verticalCenter: parent.verticalCenter
+                                         anchors.leftMargin: 15
+                                         transformOrigin: Item.Center
+                                     }
+
+                                     Text {
+                                         text: "Trades"
+                                         color: "#64748b"
+                                         font.pixelSize: 12
+                                         anchors.bottom: parent.bottom
+                                         anchors.horizontalCenter: parent.horizontalCenter
+                                         anchors.bottomMargin: 10
+                                     }
+
+                                }
 
                              }
 
@@ -1032,10 +1215,34 @@ ApplicationWindow  {
                                      }
 
                                      background: Rectangle {
-                                         color: parent.checked ? "#0ea5e9" : "transparent"
+                                         visible: parent.checked
+                                         color: "transparent"
                                          radius: 15
                                          implicitWidth: 80
                                          implicitHeight: 30
+
+                                         gradient: Gradient {
+                                             GradientStop {
+                                                 position: 0.0
+                                                 color: parent.hovered ? "#06b6d4" : "#0ea5e9"
+                                             }
+                                             GradientStop {
+                                                 position: 1.0
+                                                 color: parent.hovered ? "#0284c7" : "#0369a1"
+                                             }
+                                         }
+
+                                         Rectangle {
+                                             anchors.fill: parent
+                                             radius: parent.radius
+                                             gradient: Gradient {
+                                                 GradientStop { position: 0.0; color: "#20FFFFFF" }
+                                                 GradientStop { position: 0.5; color: "#00FFFFFF" }
+                                             }
+                                         }
+
+                                         border.color: "#22d3ee"
+                                         border.width: 1
                                      }
                                  }
                              }
@@ -1086,7 +1293,7 @@ ApplicationWindow  {
                                      MetricCard {
                                          title: "Sharpe Ratio (Median)"
                                          value: "0.92"
-                                         valueColor: "#f59e0b"    // #0ea5e9 is blue
+                                         valueColor: "#f59e0b"
                                          iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
                                      }
 

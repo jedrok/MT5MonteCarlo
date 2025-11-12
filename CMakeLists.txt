@@ -7,11 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
-
+find_package(Qt6 REQUIRED COMPONENTS Graphs)
 
 qt_add_executable(appMT5MonteCarlo
     main.cpp
 )
+
+qt_policy(SET QTP0001 OLD)
 
 qt_add_qml_module(appMT5MonteCarlo
     URI MT5MonteCarlo
@@ -22,8 +24,6 @@ qt_add_qml_module(appMT5MonteCarlo
         resources.qrc
         QML_FILES
         QML_FILES MetricCard.qml
-
-
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -39,7 +39,9 @@ set_target_properties(appMT5MonteCarlo PROPERTIES
 
 target_link_libraries(appMT5MonteCarlo
     PRIVATE Qt6::Quick
+    PRIVATE Qt6::Graphs
 )
+
 
 include(GNUInstallDirs)
 install(TARGETS appMT5MonteCarlo
