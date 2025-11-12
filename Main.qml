@@ -4,6 +4,9 @@ import QtQuick.Window
 import QtQuick.Effects
 import QtQuick.Layouts
 import QtGraphs
+import QtQuick.Dialogs
+import QtCore
+
 
 
 ApplicationWindow  {
@@ -14,6 +17,27 @@ ApplicationWindow  {
     flags: Qt.Window | Qt.FramelessWindowHint
     title: qsTr("MT5 monte carlo")
     font: Qt.application.font
+
+
+
+
+    FileDialog {
+        id:fileDialog
+        title: "Open a XLSX file"
+        nameFilters: ["Excel files (*.xlsx)"]
+        currentFolder: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
+        onAccepted: {
+            console.log("you chose: " + fileDialog.selectedFile)
+
+            var path = fileDialog.selectedFile.toString()
+            path = path.replace(/^file:\/\//, "")
+            //console.log("Local path: " + path)
+        }
+
+    }
+
+
+
 
 
     // custom title bar
@@ -252,7 +276,6 @@ ApplicationWindow  {
                         console.log("run simulation clicked")
                         runButton.isSimulating = true
                         // gonna start simulation here
-                        // Simulate completion after delay (replace with actual simulation completion signal)
 
                     }
                 }
@@ -424,11 +447,15 @@ ApplicationWindow  {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                console.log("Open file clicked")
-                                // file dialog here
+                               // console.log("Open file clicked")
+                                fileDialog.open()
                             }
                         }
+
                      }
+
+
+
                 }
              }
 
@@ -797,7 +824,7 @@ ApplicationWindow  {
         }
 
 
-        // graph and metrics area
+            // graph and metrics area
             Rectangle {
                 id: graphArea
                 anchors.left: leftSidePanel.right
@@ -1500,7 +1527,6 @@ ApplicationWindow  {
 
 
 
-
     // status bar
     Rectangle {
         id: statusBar
@@ -1554,9 +1580,6 @@ ApplicationWindow  {
             }
         }
     }
-
-
-
 
 
 

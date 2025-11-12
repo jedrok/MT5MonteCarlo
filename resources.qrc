@@ -22,5 +22,6 @@
         <file>assets/icons/median_max_dd.svg</file>
         <file>assets/icons/best_case_dd.svg</file>
         <file>assets/icons/calmar_ratio.svg</file>
+        <file>statusBarManager.cpp</file>
     </qresource>
 </RCC>

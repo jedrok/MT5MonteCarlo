@@ -6,8 +6,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-find_package(Qt6 REQUIRED COMPONENTS Graphs)
+find_package(Qt6 REQUIRED COMPONENTS
+    Quick
+    Graphs
+)
+
 
 qt_add_executable(appMT5MonteCarlo
     main.cpp
@@ -24,6 +27,10 @@ qt_add_qml_module(appMT5MonteCarlo
         resources.qrc
         QML_FILES
         QML_FILES MetricCard.qml
+        SOURCES statusBarManager.h
+        SOURCES
+        SOURCES statusBarManager.cpp
+        SOURCES statusBarManager.h
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
