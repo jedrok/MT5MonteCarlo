@@ -972,8 +972,8 @@ ApplicationWindow  {
                                  Layout.fillWidth: true
                                  Layout.fillHeight: true
 
-
                              // will do the graph here later
+
 
 
                                }
@@ -1076,16 +1076,18 @@ ApplicationWindow  {
                                       MetricCard {
                                           title: "Median Return"
                                           value: "+4.62%"
-                                          valueColor: "#22c55e"
+                                          valueColor: "#10b981"
                                           iconSource: "qrc:/assets/icons/median_return_icon.svg"
                                       }
                                       MetricCard {
                                           title: "Sharpe Ratio"
                                           value: "0.28"
+                                          valueColor: "#f59e0b"
                                       }
                                       MetricCard {
                                           title: "Risk of Ruin"
                                           value: "0.00%"
+                                          valueColor: "#ef4444"
                                       }
                                       MetricCard {
                                           title: "CAR/MDD Ratio"
@@ -1095,32 +1097,148 @@ ApplicationWindow  {
                                   }
                               }
 
-                             Rectangle {
-                                 color: "transparent"
-                                 Text {
-                                     anchors.centerIn: parent
-                                     text: "Returns Content Area"
-                                     color: "#94a3b8"
+
+                             Flickable {
+                                  clip: true
+                                  contentHeight: overviewLayout.height
+                                  Layout.fillWidth: true
+                                  Layout.fillHeight: true
+
+                                  ColumnLayout {
+
+                                      anchors.fill: parent
+                                      anchors.leftMargin: 10
+                                      anchors.rightMargin: 10
+                                      spacing: 15
+
+
+                                     MetricCard {
+                                         title: "Average Return"
+                                         value: "+3.85%"
+                                         valueColor: "#10b981"
+                                     }
+                                     MetricCard {
+                                         title: "Best Case Return"
+                                         value: "+12.34%"
+                                         valueColor: "#10b981"
+                                     }
+                                     MetricCard {
+                                         title: "Worst Case Return"
+                                         value: "-5.67%"
+                                         valueColor: "#ef4444"
+                                     }
+                                     MetricCard {
+                                         title: "Std Deviation"
+                                         value: "8.42%"
+                                         valueColor: "#f59e0b"
+                                     }
+                                     MetricCard {
+                                         title: "Profit Factor"
+                                         value: "1.45"
+                                         valueColor: "#0ea5e9"
+                                     }
+                                     MetricCard {
+                                         title: "Win Rate"
+                                         value: "58.3%"
+                                         valueColor: "#8b5cf6"
+                                     }
                                  }
                              }
 
-                             Rectangle {
-                                 color: "transparent"
-                                 Text {
-                                     anchors.centerIn: parent
-                                     text: "Risk Content Area"
-                                     color: "#94a3b8"
+
+
+                             Flickable {
+                              clip: true
+                              contentHeight: overviewLayout.height
+                              Layout.fillWidth: true
+                              Layout.fillHeight: true
+
+                              ColumnLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 10
+                                  anchors.rightMargin: 10
+                                  spacing: 15
+
+                                     MetricCard {
+                                         title: "Max Drawdown"
+                                         value: "-18.5%"
+                                         valueColor: "#ef4444"
+                                     }
+                                     MetricCard {
+                                         title: "Avg Drawdown"
+                                         value: "-7.2%"
+                                         valueColor: "#f59e0b"
+                                     }
+                                     MetricCard {
+                                         title: "Max Drawdown Duration"
+                                         value: "45 days"
+                                         valueColor: "#ef4444"
+                                     }
+                                     MetricCard {
+                                         title: "Value at Risk (95%)"
+                                         value: "-12.3%"
+                                         valueColor: "#f59e0b"
+                                     }
+                                     MetricCard {
+                                         title: "Sortino Ratio"
+                                         value: "0.42"
+                                         valueColor: "#0ea5e9"
+                                     }
+                                     MetricCard {
+                                         title: "Calmar Ratio"
+                                         value: "0.25"
+                                         valueColor: "#8b5cf6"
+                                     }
                                  }
                              }
 
-                             Rectangle {
-                                 color: "transparent"
-                                 Text {
-                                     anchors.centerIn: parent
-                                     text: "Trades Content Area"
-                                     color: "#94a3b8"
+
+
+                             Flickable {
+                              clip: true
+                              contentHeight: overviewLayout.height
+                              Layout.fillWidth: true
+                              Layout.fillHeight: true
+
+                              ColumnLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 10
+                                  anchors.rightMargin: 10
+                                  spacing: 15
+
+                                     MetricCard {
+                                         title: "Total Trades"
+                                         value: "156"
+                                         valueColor: "#8b5cf6"
+                                     }
+                                     MetricCard {
+                                         title: "Winning Trades"
+                                         value: "91"
+                                         valueColor: "#10b981"
+                                     }
+                                     MetricCard {
+                                         title: "Losing Trades"
+                                         value: "65"
+                                         valueColor: "#ef4444"
+                                     }
+                                     MetricCard {
+                                         title: "Avg Win"
+                                         value: "+$245"
+                                         valueColor: "#10b981"
+                                     }
+                                     MetricCard {
+                                         title: "Avg Loss"
+                                         value: "-$180"
+                                         valueColor: "#ef4444"
+                                     }
+                                     MetricCard {
+                                         title: "Largest Win"
+                                         value: "+$1,250"
+                                         valueColor: "#10b981"
+                                     }
                                  }
                              }
+
                          }
                      }
                 }

@@ -10,7 +10,7 @@ Rectangle {
     property alias valueColor: valueText.color
     property alias iconSource: iconImage.source
 
-    color: "#1e222e"
+    color: "#151822"
     border.color: "#334155"
     border.width: 1
     radius: 8
