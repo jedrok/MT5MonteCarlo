@@ -6,10 +6,14 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
+list(APPEND CMAKE_PREFIX_PATH "/usr/local")
+
+
 find_package(Qt6 REQUIRED COMPONENTS
     Quick
     Graphs
 )
+find_package(Xlnt REQUIRED)
 
 
 qt_add_executable(appMT5MonteCarlo
@@ -21,16 +25,13 @@ qt_policy(SET QTP0001 OLD)
 qt_add_qml_module(appMT5MonteCarlo
     URI MT5MonteCarlo
     VERSION 1.0
-    QML_FILES
-        Main.qml
-    RESOURCES
-        resources.qrc
-        QML_FILES
-        QML_FILES MetricCard.qml
-        SOURCES statusBarManager.h
-        SOURCES
-        SOURCES statusBarManager.cpp
-        SOURCES statusBarManager.h
+    QML_FILES Main.qml
+    RESOURCES resources.qrc
+    QML_FILES MetricCard.qml
+    SOURCES ExcelParser.cpp
+    SOURCES ExcelParser.h
+    SOURCES StatusBarManager.cpp
+    SOURCES StatusBarManager.h
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -47,6 +48,7 @@ set_target_properties(appMT5MonteCarlo PROPERTIES
 target_link_libraries(appMT5MonteCarlo
     PRIVATE Qt6::Quick
     PRIVATE Qt6::Graphs
+    PRIVATE xlnt::xlnt
 )
 
 

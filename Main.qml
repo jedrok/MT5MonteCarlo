@@ -18,28 +18,6 @@ ApplicationWindow  {
     title: qsTr("MT5 monte carlo")
     font: Qt.application.font
 
-
-
-
-    FileDialog {
-        id:fileDialog
-        title: "Open a XLSX file"
-        nameFilters: ["Excel files (*.xlsx)"]
-        currentFolder: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
-        onAccepted: {
-            console.log("you chose: " + fileDialog.selectedFile)
-
-            var path = fileDialog.selectedFile.toString()
-            path = path.replace(/^file:\/\//, "")
-            //console.log("Local path: " + path)
-        }
-
-    }
-
-
-
-
-
     // custom title bar
     Rectangle {
         id: customTitleBar
@@ -1527,7 +1505,7 @@ ApplicationWindow  {
 
 
 
-    // status bar
+    // Status bar
     Rectangle {
         id: statusBar
         height: 24
@@ -1538,16 +1516,44 @@ ApplicationWindow  {
         border.color: "#2d3139"
         border.width: 1
 
+        Timer {
+            id: timeUpdater
+            interval: 1000
+            running: true
+            repeat: true
+            onTriggered: {
+                timeText.text = new Date().toLocaleTimeString();
+            }
+        }
+
         Row {
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 20
+            spacing: 5
+            visible: statusBarManager.isActive
 
             Text {
-                text: "● Running simulation... 4%"
-                color: "#4ade80"
-                font.pixelSize: 11
+                text: "●"
+                color: {
+                    if (statusBarManager.statusType === "error") return "#ef4444"
+                    if (statusBarManager.statusType === "simulating") return "#4ade80"
+                    if (statusBarManager.statusType === "parsing") return "#f59e0b"
+                    return "#9ca3af"
+                }
+                font.pixelSize: 12
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Text {
+                text: statusBarManager.statusText
+                color: {
+                    if (statusBarManager.statusType === "error") return "#ef4444"
+                    if (statusBarManager.statusType === "simulating") return "#4ade80"
+                    if (statusBarManager.statusType === "parsing") return "#f59e0b"
+                    return "#9ca3af"
+                }
+                font.pixelSize: 12
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
@@ -1559,21 +1565,8 @@ ApplicationWindow  {
             spacing: 15
 
             Text {
-                text: "CPU: 24%"
-                color: "#9ca3af"
-                font.pixelSize: 11
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                text: "Memory: 2.1 GB"
-                color: "#9ca3af"
-                font.pixelSize: 11
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            Text {
-                text: "11:42:36 AM"
+                id: timeText
+                text: new Date().toLocaleTimeString()
                 color: "#9ca3af"
                 font.pixelSize: 11
                 anchors.verticalCenter: parent.verticalCenter
@@ -1583,6 +1576,36 @@ ApplicationWindow  {
 
 
 
+    FileDialog {
+        id:fileDialog
+        title: "Open a XLSX file"
+        nameFilters: ["Excel files (*.xlsx)"]
+        currentFolder: StandardPaths.standardLocations(StandardPaths.DocumentsLocation)[0]
+
+        onAccepted: {
+            var path = fileDialog.selectedFile.toString()
+           statusBarManager.setParsingFile(path)
+           excelParser.parseExcelFile(path)
+
+        }
 
     }
+
+    Connections {
+        target: excelParser
+
+        function onParsingComplete(initialBalance, tradeCount) {
+            statusBarManager.parsingComplete()
+        }
+
+        function onParsingFailed(error) {
+            statusBarManager.setError(error)
+        }
+    }
+
+
+
+
+
+}
 
