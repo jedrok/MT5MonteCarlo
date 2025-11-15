@@ -3,6 +3,9 @@
 #include <QQmlContext>
 #include "ExcelParser.h"
 #include "StatusBarManager.h"
+#include "MonteCarloSimulator.h"
+
+
 
 
 int main(int argc, char *argv[])
@@ -11,18 +14,23 @@ int main(int argc, char *argv[])
 
     ExcelParser excelParser;
     StatusBarManager statusBarManager;
+    MonteCarloSimulator monteCarloSimulator;
 
-
-    // connect parser signals to status bar
+    // parser signals
     QObject::connect(&excelParser, &ExcelParser::parsingProgress,
     &statusBarManager, &StatusBarManager::updateParsingProgress);
+
+    // sim progress
+    QObject::connect(&monteCarloSimulator, &MonteCarloSimulator::simulationProgress,
+                     &statusBarManager, &StatusBarManager::updateSimulationProgress);
+
 
 
     QQmlApplicationEngine engine;
 
-    // expose the parser to QML
     engine.rootContext()->setContextProperty("excelParser", &excelParser);
     engine.rootContext()->setContextProperty("statusBarManager", &statusBarManager);
+    engine.rootContext()->setContextProperty("monteCarloSimulator", &monteCarloSimulator);
 
 
     const QUrl url(QStringLiteral("qrc:/MT5MonteCarlo/Main.qml"));

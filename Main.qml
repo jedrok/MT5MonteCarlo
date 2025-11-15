@@ -18,6 +18,32 @@ ApplicationWindow  {
     title: qsTr("MT5 monte carlo")
     font: Qt.application.font
 
+
+    property var simulationMetrics: null
+    property bool fileLoaded: false
+    property bool simulationRunning: false
+    property string loadedFilePath: ""
+    property bool isTransitioning: false
+
+    property int simNumRuns: 1000
+    property bool simRandomize: true
+
+        function formatNumber(num, decimals) {
+            return num.toFixed(decimals)
+        }
+
+        function formatPercent(num, decimals, showPlus) {
+            var sign = (showPlus && num > 0) ? "+" : ""
+            return sign + num.toFixed(decimals) + "%"
+        }
+
+        function formatCurrency(num, decimals, showPlus) {
+            var sign = (showPlus && num > 0) ? "+$" : (num < 0 ? "-$" : "$")
+            return sign + Math.abs(num).toFixed(decimals)
+        }
+
+
+
     // custom title bar
     Rectangle {
         id: customTitleBar
@@ -251,10 +277,26 @@ ApplicationWindow  {
                     enabled: !runButton.isSimulating
 
                     onClicked: {
-                        console.log("run simulation clicked")
-                        runButton.isSimulating = true
-                        // gonna start simulation here
+                            if (!window.fileLoaded) {
+                                statusBarManager.setError("Please load an Excel file first")
+                                return
+                            }
 
+                         if (window.simulationMetrics !== null) {
+                         window.isTransitioning = true
+                         fadeOutTimer.start()
+                         return
+                         }
+
+                         window.simNumRuns = Math.round(numOfRunsSlider.value)
+                         window.simRandomize = randomizeOrderToggleSwitch.checked
+
+                        // update ui state
+                        window.simulationRunning = true
+                        runButton.isSimulating = true
+
+                       statusBarManager.setParsingFile(window.loadedFilePath)
+                       excelParser.parseExcelFile(window.loadedFilePath)
                     }
                 }
 
@@ -310,7 +352,7 @@ ApplicationWindow  {
                     enabled: runButton.isSimulating
 
                     onClicked: {
-                        console.log("Stop simulation clicked")
+                        monteCarloSimulator.stopSimulation()
                         runButton.isSimulating = false
                     }
                 }
@@ -425,7 +467,6 @@ ApplicationWindow  {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                               // console.log("Open file clicked")
                                 fileDialog.open()
                             }
                         }
@@ -613,7 +654,6 @@ ApplicationWindow  {
                             anchors.margins: 12
                             spacing: 8
 
-                            // label and Value
                             Row {
                                 width: parent.width
                                 spacing: 97
@@ -641,7 +681,7 @@ ApplicationWindow  {
                             // confidence level slider
                             Slider {
                                 id: confidenceLevelSlider
-                                from: 80
+                                from: 90
                                 to: 99
                                 stepSize: 1
                                 value: 95
@@ -686,7 +726,7 @@ ApplicationWindow  {
                                 anchors.horizontalCenter: parent.horizontalCenter
 
                                 Text {
-                                    text: "80%"
+                                    text: "90%"
                                     color: "#777"
                                     font.pixelSize: 12
                                     width: parent.width / 2
@@ -694,7 +734,7 @@ ApplicationWindow  {
                                 }
 
                                 Text {
-                                    text: "90%"
+                                    text: "99%"
                                     color: "#777"
                                     font.pixelSize: 12
                                     width: parent.width / 2
@@ -773,11 +813,10 @@ ApplicationWindow  {
                                     id: randomizeOrderToggleSwitch
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    property bool checked: false
+                                    property bool checked: true
 
                                     onClicked: {
                                         checked = !checked
-                                        console.log("Randomize Order:", checked)
                                     }
                                 }
                             }
@@ -816,10 +855,9 @@ ApplicationWindow  {
                 Rectangle {
                     id: emptyState
                     anchors.fill: parent
-                    //visible: true // dont forget set false when data is loaded
-                    //visible: opacity > 0
-                    visible: false   // temporary till i finish the results ui
-                    //opacity: runButton.isSimulating ? 0 : 1
+                    visible: opacity > 0
+                    opacity: window.simulationMetrics === null ? 1 : 0
+                    color: "transparent"
 
                     Behavior on opacity {
                        NumberAnimation { duration: 300; easing.type: Easing.InOutQuad }
@@ -861,8 +899,7 @@ ApplicationWindow  {
                      id: resultsArea
                      anchors.fill: parent
                      visible: opacity > 0
-                     //opacity: 0  // Start hidden then set to 1 when simulation completes
-                     opacity:1 // temp so i can finish the results ui
+                     opacity: (window.simulationMetrics !== null && !window.isTransitioning) ? 1 : 0
                      color: "transparent"
 
 
@@ -1276,42 +1313,42 @@ ApplicationWindow  {
 
                                      MetricCard {
                                          title: "Simulations Run"
-                                         value: "100"
+                                         value: window.simulationMetrics ? window.simulationMetrics.numSimulations.toString() : "0"
                                          valueColor: "#8b5cf6"
                                          iconSource: "qrc:/assets/icons/simulation_metric_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Median Return"
-                                         value: "+4.62%"
-                                         valueColor: "#10b981"
+                                         value: window.simulationMetrics ? formatPercent(window.simulationMetrics.medianReturn, 2, true) : "+0.00%"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.medianReturn > 0 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/median_return_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Median Max Drawdown"
-                                         value: "-18.5%"
+                                         value: window.simulationMetrics ? "-" + window.simulationMetrics.medianMaxDrawdown.toFixed(1) + "%" : "-0.0%"
                                          valueColor: "#f59e0b"
                                          iconSource: "qrc:/assets/icons/median_max_dd.svg"
                                      }
 
                                      MetricCard {
                                          title: "Sharpe Ratio (Median)"
-                                         value: "0.92"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianSharpeRatio.toFixed(2) : "0.00"
                                          valueColor: "#f59e0b"
                                          iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Risk of Ruin"
-                                         value: "0.00%"
-                                         valueColor: "#10b981"
+                                         value: window.simulationMetrics ? window.simulationMetrics.riskOfRuin.toFixed(2) + "%" : "0.00%"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.riskOfRuin < 1 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/risk_of_ruin_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Calmar Ratio"
-                                         value: "2.1"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianCalmarRatio.toFixed(2) : "0.00"
                                          valueColor: "#8b5cf6"
                                          iconSource: "qrc:/assets/icons/calmar_ratio.svg"
                                      }
@@ -1322,11 +1359,12 @@ ApplicationWindow  {
                              Flickable {
                                  id: returnsLayout
                                  clip: true
-                                 contentHeight: overviewLayout.height
+                                 contentHeight: returnsColumn.height
                                  Layout.fillWidth: true
                                  Layout.fillHeight: true
 
                                  ColumnLayout {
+                                     id: returnsColumn
                                      anchors.fill: parent
                                      anchors.leftMargin: 10
                                      anchors.rightMargin: 10
@@ -1334,57 +1372,57 @@ ApplicationWindow  {
 
                                      MetricCard {
                                          title: "Median Return"
-                                         value: "+3.85%"
-                                         valueColor: "#10b981"
+                                         value: window.simulationMetrics ? formatPercent(window.simulationMetrics.medianReturn, 2, true) : "+0.00%"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.medianReturn > 0 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/percent_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Mean Return"
-                                         value: "+4.12%"
-                                         valueColor: "#10b981"
+                                         value: window.simulationMetrics ? formatPercent(window.simulationMetrics.meanReturn, 2, true) : "+0.00%"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.meanReturn > 0 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/percent_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Best Case (99th %ile)"
-                                         value: "+15.4%"
+                                         value: window.simulationMetrics ? "+" + window.simulationMetrics.bestReturn.toFixed(1) + "%" : "+0.0%"
                                          valueColor: "#10b981"
                                          iconSource: "qrc:/assets/icons/percent_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Worst Case (1st %ile)"
-                                         value: "-6.8%"
+                                         value: window.simulationMetrics ? window.simulationMetrics.worstReturn.toFixed(1) + "%" : "0.0%"
                                          valueColor: "#ef4444"
                                          iconSource: "qrc:/assets/icons/trending_down_red_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Profit Factor (Median)"
-                                         value: "1.45"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianProfitFactor.toFixed(2) : "0.00"
                                          valueColor: "#0ea5e9"
                                          iconSource: "qrc:/assets/icons/profit_factor_trending_up.svg"
                                      }
 
                                      MetricCard {
                                          title: "Sharpe Ratio (Median)"
-                                         value: "1.12"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianSharpeRatio.toFixed(2) : "0.00"
                                          valueColor: "#f59e0b"
                                          iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
                                      }
                                  }
                              }
 
-
                              Flickable {
                                  id: riskLayout
                                  clip: true
-                                 contentHeight: overviewLayout.height
+                                 contentHeight: riskColumn.height
                                  Layout.fillWidth: true
                                  Layout.fillHeight: true
 
                                  ColumnLayout {
+                                     id: riskColumn
                                      anchors.fill: parent
                                      anchors.leftMargin: 10
                                      anchors.rightMargin: 10
@@ -1392,42 +1430,42 @@ ApplicationWindow  {
 
                                      MetricCard {
                                          title: "Median Max Drawdown"
-                                         value: "-18.5%"
+                                         value: window.simulationMetrics ? "-" + window.simulationMetrics.medianMaxDrawdown.toFixed(1) + "%" : "-0.0%"
                                          valueColor: "#f59e0b"
                                          iconSource: "qrc:/assets/icons/median_max_dd.svg"
                                      }
 
                                      MetricCard {
                                          title: "Best Case Max Drawdown"
-                                         value: "-7.2%"
+                                         value: window.simulationMetrics ? "-" + window.simulationMetrics.bestMaxDrawdown.toFixed(1) + "%" : "-0.0%"
                                          valueColor: "#10b981"
                                          iconSource: "qrc:/assets/icons/best_case_dd.svg"
                                      }
 
                                      MetricCard {
                                          title: "Worst Case Max Drawdown (95th %ile)"
-                                         value: "-32.8%"
+                                         value: window.simulationMetrics ? "-" + window.simulationMetrics.worstMaxDrawdown.toFixed(1) + "%" : "-0.0%"
                                          valueColor: "#ef4444"
                                          iconSource: "qrc:/assets/icons/trending_down_red_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Value at Risk (95%)"
-                                         value: "-4.5%"
+                                         value: window.simulationMetrics ? window.simulationMetrics.valueAtRisk95.toFixed(1) + "%" : "0.0%"
                                          valueColor: "#ef4444"
                                          iconSource: "qrc:/assets/icons/worst_case_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Risk of Ruin"
-                                         value: "0.42%"
-                                         valueColor: "#ef4444"
+                                         value: window.simulationMetrics ? window.simulationMetrics.riskOfRuin.toFixed(2) + "%" : "0.00%"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.riskOfRuin < 1 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/worst_case_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Calmar Ratio (Median)"
-                                         value: "0.25"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianCalmarRatio.toFixed(2) : "0.00"
                                          valueColor: "#8b5cf6"
                                          iconSource: "qrc:/assets/icons/calmar_ratio.svg"
                                      }
@@ -1435,15 +1473,15 @@ ApplicationWindow  {
                              }
 
 
-
                              Flickable {
                                  id: tradesLayout
                                  clip: true
-                                 contentHeight: overviewLayout.height
+                                 contentHeight: tradesColumn.height
                                  Layout.fillWidth: true
                                  Layout.fillHeight: true
 
                                  ColumnLayout {
+                                     id: tradesColumn
                                      anchors.fill: parent
                                      anchors.leftMargin: 10
                                      anchors.rightMargin: 10
@@ -1451,42 +1489,42 @@ ApplicationWindow  {
 
                                      MetricCard {
                                          title: "Total Trades"
-                                         value: "156"
+                                         value: window.simulationMetrics ? window.simulationMetrics.totalTrades.toString() : "0"
                                          valueColor: "#8b5cf6"
                                          iconSource: "qrc:/assets/icons/total_trade_metric_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Win Rate (Median)"
-                                         value: "58%"
+                                         value: window.simulationMetrics ? window.simulationMetrics.medianWinRate.toFixed(0) + "%" : "0%"
                                          valueColor: "#10b981"
                                          iconSource: "qrc:/assets/icons/target_green_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Avg R/R Ratio"
-                                         value: "1.8"
+                                         value: window.simulationMetrics ? window.simulationMetrics.avgRiskReward.toFixed(1) : "0.0"
                                          valueColor: "#06b6d4"
                                          iconSource: "qrc:/assets/icons/avg_rr_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Expectancy per Trade"
-                                         value: "+$45"
-                                         valueColor: "#10b981"
+                                         value: window.simulationMetrics ? formatCurrency(window.simulationMetrics.expectancyPerTrade, 0, true) : "$0"
+                                         valueColor: window.simulationMetrics && window.simulationMetrics.expectancyPerTrade > 0 ? "#10b981" : "#ef4444"
                                          iconSource: "qrc:/assets/icons/arrow_outward_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Avg Loss"
-                                         value: "-$180"
+                                         value: window.simulationMetrics ? "-$" + window.simulationMetrics.avgLoss.toFixed(0) : "-$0"
                                          valueColor: "#ef4444"
                                          iconSource: "qrc:/assets/icons/worst_case_icon.svg"
                                      }
 
                                      MetricCard {
                                          title: "Largest Win"
-                                         value: "+$1,250"
+                                         value: window.simulationMetrics ? "+$" + window.simulationMetrics.largestWin.toFixed(0) : "+$0"
                                          valueColor: "#10b981"
                                          iconSource: "qrc:/assets/icons/arrow_outward_icon.svg"
                                      }
@@ -1537,7 +1575,7 @@ ApplicationWindow  {
                 text: "●"
                 color: {
                     if (statusBarManager.statusType === "error") return "#ef4444"
-                    if (statusBarManager.statusType === "simulating") return "#4ade80"
+                    if (statusBarManager.statusType === "simulating") return "#10b981"
                     if (statusBarManager.statusType === "parsing") return "#f59e0b"
                     return "#9ca3af"
                 }
@@ -1549,7 +1587,7 @@ ApplicationWindow  {
                 text: statusBarManager.statusText
                 color: {
                     if (statusBarManager.statusType === "error") return "#ef4444"
-                    if (statusBarManager.statusType === "simulating") return "#4ade80"
+                    if (statusBarManager.statusType === "simulating") return "#10b981"
                     if (statusBarManager.statusType === "parsing") return "#f59e0b"
                     return "#9ca3af"
                 }
@@ -1584,28 +1622,96 @@ ApplicationWindow  {
 
         onAccepted: {
             var path = fileDialog.selectedFile.toString()
-           statusBarManager.setParsingFile(path)
-           excelParser.parseExcelFile(path)
+            window.loadedFilePath = path
+            window.fileLoaded = true
+            window.simulationMetrics = null
 
         }
 
     }
+
+
+    Timer {
+        id: fadeOutTimer
+        interval: 500
+        repeat: false
+        onTriggered: {
+            window.simulationMetrics = null
+
+            Qt.callLater(function() {
+                window.simNumRuns = Math.round(numOfRunsSlider.value)
+                window.simRandomize = randomizeOrderToggleSwitch.checked
+                // update ui state
+                window.simulationRunning = true
+                runButton.isSimulating = true
+
+                statusBarManager.setParsingFile(window.loadedFilePath)
+                excelParser.parseExcelFile(window.loadedFilePath)
+            })
+        }
+    }
+
+
 
     Connections {
         target: excelParser
 
         function onParsingComplete(initialBalance, tradeCount) {
-            statusBarManager.parsingComplete()
-        }
+                if (window.simulationRunning) {
+                    var outcomes = excelParser.getTradeOutcomes()
+                    var initialBal = excelParser.getInitialBalance()
+
+                    statusBarManager.setSimulating(window.simNumRuns)
+                    monteCarloSimulator.runSimulation(
+                        outcomes,
+                        initialBal,
+                        window.simNumRuns,
+                        window.simRandomize
+                    )
+                } else {
+                    statusBarManager.parsingComplete()
+                }
+            }
+
 
         function onParsingFailed(error) {
+            window.fileLoaded = false
+            runButton.isSimulating = false
+            window.simulationRunning = false
             statusBarManager.setError(error)
         }
     }
 
 
+    Connections {
+        target: monteCarloSimulator
+
+        function onSimulationComplete(metrics) {
+
+            window.simulationMetrics = metrics
+            window.isTransitioning = false
+
+            runButton.isSimulating = false
+            window.simulationRunning = false
+
+            statusBarManager.simulationComplete(metrics.numSimulations)
+        }
+
+        function onSimulationFailed(error) {
+            runButton.isSimulating = false
+            window.simulationRunning = false
+            statusBarManager.setError(error)
+        }
+
+        function onSimulationStopped() {
+            runButton.isSimulating = false
+            window.simulationRunning = false
+            statusBarManager.setIdle()
+        }
+    }
+
+  }
 
 
 
-}
 

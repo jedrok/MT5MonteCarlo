@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVariant>
 #include <xlnt/xlnt.hpp>
+#include <QVector>
 
 
 class ExcelParser : public QObject
@@ -12,6 +13,9 @@ class ExcelParser : public QObject
     Q_OBJECT
 public:
     explicit ExcelParser(QObject *parent = nullptr);
+
+    Q_INVOKABLE QVector<double> getTradeOutcomes() const;
+    Q_INVOKABLE double getInitialBalance() const { return m_initialBalance; }
 
 public slots:
     void parseExcelFile(const QString &filePath);

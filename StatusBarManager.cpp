@@ -58,12 +58,13 @@ void StatusBarManager::updateSimulationProgress(int current, int total)
     }
 }
 
-void StatusBarManager::simulationComplete()
+void StatusBarManager::simulationComplete(int numSimulations)
 {
-    setStatus("Simulation complete", 100, "simulating", true);
+    // Show completion with run count, same green color
+    setStatus(QString("%1 simulations complete").arg(numSimulations), 100, "simulating", true);
 
-    // auto hide after 2 secs
-    QTimer::singleShot(2000, this, &StatusBarManager::setIdle);
+    // Auto-hide after 2 seconds
+   // QTimer::singleShot(2000, this, &StatusBarManager::setIdle);
 }
 
 void StatusBarManager::setError(const QString &errorMessage)

@@ -36,7 +36,7 @@ public slots:
     void parsingComplete();
     void setSimulating(int numSimulations);
     void updateSimulationProgress(int current, int total);
-    void simulationComplete();
+    void simulationComplete(int numSimulations);
     void setError(const QString &errorMessage);
 
 signals:

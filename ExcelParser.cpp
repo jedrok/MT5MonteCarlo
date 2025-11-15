@@ -94,3 +94,15 @@ void ExcelParser::parseExcelFile(const QString &filePath)
         emit parsingFailed(errorMsg);
     }
 }
+
+QVector<double> ExcelParser::getTradeOutcomes() const
+{
+    QVector<double> outcomes;
+    outcomes.reserve(m_trades.size());
+
+    for (const auto &trade : m_trades) {
+        outcomes.append(trade.outcome);
+    }
+
+    return outcomes;
+}

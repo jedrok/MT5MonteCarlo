@@ -32,6 +32,8 @@ qt_add_qml_module(appMT5MonteCarlo
     SOURCES ExcelParser.h
     SOURCES StatusBarManager.cpp
     SOURCES StatusBarManager.h
+    SOURCES MonteCarloSimulator.h
+    SOURCES MonteCarloSimulator.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
