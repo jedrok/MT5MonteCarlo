@@ -278,7 +278,7 @@ ApplicationWindow  {
 
                     onClicked: {
                             if (!window.fileLoaded) {
-                                statusBarManager.setError("Please load an Excel file first")
+                                statusBarManager.setError("Please load a MT5 backtest report Excel file first")
                                 return
                             }
 
@@ -288,6 +288,7 @@ ApplicationWindow  {
                          return
                          }
 
+                         clearGraphData()
                          window.simNumRuns = Math.round(numOfRunsSlider.value)
                          window.simRandomize = randomizeOrderToggleSwitch.checked
 
@@ -640,8 +641,6 @@ ApplicationWindow  {
                     }
 
 
-
-
                     // confidence level section
                     Rectangle {
                         width: parent.width
@@ -926,7 +925,6 @@ ApplicationWindow  {
                                  Layout.margins: 10
                                  spacing: 15
 
-
                                  RowLayout {
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 30
@@ -1005,208 +1003,119 @@ ApplicationWindow  {
                                      }
                                  }
 
-                             Rectangle {
-                                 id:equityCurveGraphArea
-                                 color: "#151822"
-                                 border.color: "#2d3139"
-                                 radius: 5
-                                 Layout.fillWidth: true
-                                 Layout.fillHeight: true
+                 Rectangle {
+                     id:equityCurveGraphArea
+                     color: "#151822"
+                     border.color: "#2d3139"
+                     radius: 5
+                     Layout.fillWidth: true
+                     Layout.fillHeight: true
 
+                     GraphsView {
+                             id: graphView
+                             anchors.fill: parent
+                             anchors.margins: 20
+                             anchors.bottomMargin: 20
+                             anchors.leftMargin: 50
 
-                                 GraphsView {
-                                         id: graphView
-                                         anchors.fill: parent
-                                         anchors.margins: 20
-                                         anchors.bottomMargin: 20
-                                         anchors.leftMargin: 50
-
-                                         theme: GraphsTheme {
-                                             theme: GraphsTheme.Theme.UserDefined
-                                             colorScheme: GraphsTheme.ColorScheme.Dark
-                                             backgroundColor: "#151822"
-                                             grid.mainColor: "#1e2531"
-                                             grid.subColor: "transparent"
-                                             labelTextColor: "#64748b"
-                                             plotAreaBackgroundColor: "#151822"
-                                             gridVisible: true
-                                         }
-
-
-                                         axisX: ValueAxis {
-                                             id: axisX
-                                             min: 0
-                                             max: 100
-                                             labelFormat: "%.0f"
-                                         }
-
-                                         axisY: ValueAxis {
-                                             id: axisY
-                                             min: 9000
-                                             max: 15000
-                                             labelFormat: "$%.0f"
-                                         }
-
-                                        // sample runs
-                                       SplineSeries {
-                                           color: "#7b68ee"
-                                           width: 1
-                                           opacity: 0.7
-
-                                           XYPoint { x: 0; y: 10000 }
-                                           XYPoint { x: 10; y: 10150 }
-                                           XYPoint { x: 20; y: 10050 }
-                                           XYPoint { x: 30; y: 10300 }
-                                           XYPoint { x: 40; y: 10200 }
-                                           XYPoint { x: 50; y: 10500 }
-                                           XYPoint { x: 60; y: 10400 }
-                                           XYPoint { x: 70; y: 10700 }
-                                           XYPoint { x: 80; y: 10800 }
-                                           XYPoint { x: 90; y: 11000 }
-                                           XYPoint { x: 100; y: 10900 }
-                                       }
-
-
-                                       SplineSeries {
-                                           color: "#7b68ee"
-                                           width: 1
-                                           opacity: 0.7
-
-                                           XYPoint { x: 0; y: 10000 }
-                                           XYPoint { x: 10; y: 10250 }
-                                           XYPoint { x: 20; y: 10150 }
-                                           XYPoint { x: 30; y: 10500 }
-                                           XYPoint { x: 40; y: 10400 }
-                                           XYPoint { x: 50; y: 10700 }
-                                           XYPoint { x: 60; y: 10600 }
-                                           XYPoint { x: 70; y: 10900 }
-                                           XYPoint { x: 80; y: 11000 }
-                                           XYPoint { x: 90; y: 11200 }
-                                           XYPoint { x: 100; y: 11100 }
-                                       }
-
-
-                                       SplineSeries {
-                                           color: "#7b68ee"
-                                           width: 1
-                                           opacity: 0.7
-
-                                           XYPoint { x: 0; y: 10000 }
-                                           XYPoint { x: 10; y: 9900 }
-                                           XYPoint { x: 20; y: 9950 }
-                                           XYPoint { x: 30; y: 10200 }
-                                           XYPoint { x: 40; y: 10100 }
-                                           XYPoint { x: 50; y: 10400 }
-                                           XYPoint { x: 60; y: 10300 }
-                                           XYPoint { x: 70; y: 10600 }
-                                           XYPoint { x: 80; y: 10700 }
-                                           XYPoint { x: 90; y: 10900 }
-                                           XYPoint { x: 100; y: 10800 }
-                                       }
-
-
-                                       SplineSeries {
-                                           color: "#7b68ee"
-                                           width: 1
-                                           opacity: 0.7
-
-                                           XYPoint { x: 0; y: 10000 }
-                                           XYPoint { x: 10; y: 10100 }
-                                           XYPoint { x: 20; y: 10200 }
-                                           XYPoint { x: 30; y: 10400 }
-                                           XYPoint { x: 40; y: 10500 }
-                                           XYPoint { x: 50; y: 10800 }
-                                           XYPoint { x: 60; y: 10700 }
-                                           XYPoint { x: 70; y: 11000 }
-                                           XYPoint { x: 80; y: 11100 }
-                                           XYPoint { x: 90; y: 11300 }
-                                           XYPoint { x: 100; y: 11200 }
-                                       }
-
-
-                                       SplineSeries {
-                                           color: "#7b68ee"
-                                           width: 1
-                                           opacity: 0.7
-
-                                           XYPoint { x: 0; y: 10000 }
-                                           XYPoint { x: 10; y: 10050 }
-                                           XYPoint { x: 20; y: 10100 }
-                                           XYPoint { x: 30; y: 10350 }
-                                           XYPoint { x: 40; y: 10250 }
-                                           XYPoint { x: 50; y: 10550 }
-                                           XYPoint { x: 60; y: 10450 }
-                                           XYPoint { x: 70; y: 10750 }
-                                           XYPoint { x: 80; y: 10850 }
-                                           XYPoint { x: 90; y: 11050 }
-                                           XYPoint { x: 100; y: 10950 }
-                                       }
-
-
-
-                                         SplineSeries {
-                                             id: confidenceSeries
-                                             color: "#ec4899"
-                                             width: 2
-
-                                             XYPoint { x: 0; y: 10000 }
-                                             XYPoint { x: 10; y: 10150 }
-                                             XYPoint { x: 20; y: 10250 }
-                                             XYPoint { x: 30; y: 10400 }
-                                             XYPoint { x: 40; y: 10500 }
-                                             XYPoint { x: 50; y: 10700 }
-                                             XYPoint { x: 60; y: 10850 }
-                                             XYPoint { x: 70; y: 11000 }
-                                             XYPoint { x: 80; y: 11200 }
-                                             XYPoint { x: 90; y: 11400 }
-                                             XYPoint { x: 100; y: 11600 }
-                                         }
-
-                                         SplineSeries {
-                                             id: medianSeries
-                                             color: "#06b6d4"
-                                             width: 3
-
-                                             XYPoint { x: 0; y: 10000 }
-                                             XYPoint { x: 10; y: 10500 }
-                                             XYPoint { x: 20; y: 10800 }
-                                             XYPoint { x: 30; y: 11200 }
-                                             XYPoint { x: 40; y: 11500 }
-                                             XYPoint { x: 50; y: 12000 }
-                                             XYPoint { x: 60; y: 12400 }
-                                             XYPoint { x: 70; y: 12900 }
-                                             XYPoint { x: 80; y: 13300 }
-                                             XYPoint { x: 90; y: 13800 }
-                                             XYPoint { x: 100; y: 14200 }
-                                         }
-                                     }
-
-                                     Text {
-                                         text: "Equity ($)"
-                                         color: "#64748b"
-                                         font.pixelSize: 12
-                                         rotation: -90
-                                         anchors.left: parent.left
-                                         anchors.verticalCenter: parent.verticalCenter
-                                         anchors.leftMargin: 15
-                                         transformOrigin: Item.Center
-                                     }
-
-                                     Text {
-                                         text: "Trades"
-                                         color: "#64748b"
-                                         font.pixelSize: 12
-                                         anchors.bottom: parent.bottom
-                                         anchors.horizontalCenter: parent.horizontalCenter
-                                         anchors.bottomMargin: 10
-                                     }
-
-                                }
-
+                             theme: GraphsTheme {
+                                 theme: GraphsTheme.Theme.UserDefined
+                                 colorScheme: GraphsTheme.ColorScheme.Dark
+                                 backgroundColor: "#151822"
+                                 grid.mainColor: "#1e2531"
+                                 grid.subColor: "transparent"
+                                 labelTextColor: "#64748b"
+                                 plotAreaBackgroundColor: "#151822"
+                                 gridVisible: true
                              }
 
-                         }
+                             axisX: ValueAxis {
+                                 id: axisX
+                                 min: 0
+                                 max: 100
+                                 labelFormat: "%.0f"
+                             }
 
+                             axisY: ValueAxis {
+                                 id: axisY
+                                 min: 0
+                                 max: 10000
+                                 labelFormat: "$%.0f"
+                             }
+
+                             // sample runs
+                             SplineSeries {
+                             id: sample0;
+                             color: "#7b68ee";
+                             width: 1;
+                             opacity: 0.6
+                             }
+
+                             SplineSeries {
+                             id: sample1;
+                             color: "#7b68ee";
+                             width: 1;
+                             opacity: 0.6
+                             }
+
+                             SplineSeries {
+                             id: sample2;
+                             color: "#7b68ee";
+                             width: 1;
+                             opacity: 0.6
+                             }
+
+                             SplineSeries {
+                             id: sample3;
+                             color: "#7b68ee";
+                             width: 1;
+                             opacity: 0.6
+                             }
+
+                             SplineSeries {
+                             id: sample4;
+                             color: "#7b68ee";
+                             width: 1;
+                             opacity: 0.6
+                             }
+
+                             SplineSeries {
+                             id: confidenceSeries
+                             color: "#ec4899"
+                             width: 2
+                             name: "Confidence"
+                             }
+
+                             SplineSeries {
+                             id: medianSeries
+                             color: "#06b6d4"
+                             width: 3
+                             name: "Median"
+                             }
+                          }
+
+                     Text {
+                         text: "Equity ($)"
+                         color: "#64748b"
+                         font.pixelSize: 12
+                         rotation: -90
+                         anchors.left: parent.left
+                         anchors.verticalCenter: parent.verticalCenter
+                         anchors.leftMargin: 15
+                         transformOrigin: Item.Center
+                     }
+
+                     Text {
+                         text: "Trades"
+                         color: "#64748b"
+                         font.pixelSize: 12
+                         anchors.bottom: parent.bottom
+                         anchors.horizontalCenter: parent.horizontalCenter
+                         anchors.bottomMargin: 10
+                     }
+                 }
+             }
+         }
 
                  // metrics tab
                  Rectangle {
@@ -1531,7 +1440,6 @@ ApplicationWindow  {
                                  }
                              }
 
-
                          }
                      }
                 }
@@ -1637,6 +1545,7 @@ ApplicationWindow  {
         repeat: false
         onTriggered: {
             window.simulationMetrics = null
+            clearGraphData()
 
             Qt.callLater(function() {
                 window.simNumRuns = Math.round(numOfRunsSlider.value)
@@ -1652,63 +1561,93 @@ ApplicationWindow  {
     }
 
 
+    Connections {
+            target: excelParser
+            function onParsingComplete(initialBalance, tradeCount) {
+                    if (window.simulationRunning) {
+                        var outcomes = excelParser.getTradeOutcomes()
+                        var initialBal = excelParser.getInitialBalance()
+
+                        statusBarManager.setSimulating(window.simNumRuns)
+
+                        monteCarloSimulator.runSimulation(
+                            outcomes,
+                            initialBal,
+                            window.simNumRuns,
+                            window.simRandomize,
+                            confidenceLevelSlider.value
+                        )
+                    } else {
+                        statusBarManager.parsingComplete()
+                    }
+                }
+        }
 
     Connections {
-        target: excelParser
+            target: monteCarloSimulator
 
-        function onParsingComplete(initialBalance, tradeCount) {
-                if (window.simulationRunning) {
-                    var outcomes = excelParser.getTradeOutcomes()
-                    var initialBal = excelParser.getInitialBalance()
+            function onSimulationComplete(metrics) {
+                window.simulationMetrics = metrics
+                window.isTransitioning = false
+                runButton.isSimulating = false
+                window.simulationRunning = false
+                statusBarManager.simulationComplete(metrics.numSimulations)
 
-                    statusBarManager.setSimulating(window.simNumRuns)
-                    monteCarloSimulator.runSimulation(
-                        outcomes,
-                        initialBal,
-                        window.simNumRuns,
-                        window.simRandomize
-                    )
-                } else {
-                    statusBarManager.parsingComplete()
-                }
+                // update axes
+                var range = metrics.maxY - metrics.minY
+                var buffer = range * 0.05
+                axisY.min = Math.max(0, metrics.minY - buffer)
+                axisY.max = metrics.maxY + buffer
+                axisX.max = metrics.maxX
+
+            function populateSeries(seriesObj, dataPoints) {
+                       seriesObj.clear()
+
+                       if (dataPoints && dataPoints.length > 0) {
+                           seriesObj.visible = true
+                           for (var i = 0; i < dataPoints.length; i++) {
+                               seriesObj.append(dataPoints[i].x, dataPoints[i].y)
+                           }
+                       } else {
+                           seriesObj.visible = false
+                       }
+                   }
+
+                populateSeries(medianSeries, metrics.medianCurve)
+                populateSeries(confidenceSeries, metrics.confidenceCurve)
+
+                populateSeries(sample0, metrics.sampleCurve0)
+                populateSeries(sample1, metrics.sampleCurve1)
+                populateSeries(sample2, metrics.sampleCurve2)
+                populateSeries(sample3, metrics.sampleCurve3)
+                populateSeries(sample4, metrics.sampleCurve4)
+
             }
 
+            function onSimulationFailed(error) {
+                runButton.isSimulating = false
+                window.simulationRunning = false
+                statusBarManager.setError(error)
+            }
 
-        function onParsingFailed(error) {
-            window.fileLoaded = false
-            runButton.isSimulating = false
-            window.simulationRunning = false
-            statusBarManager.setError(error)
-        }
-    }
-
-
-    Connections {
-        target: monteCarloSimulator
-
-        function onSimulationComplete(metrics) {
-
-            window.simulationMetrics = metrics
-            window.isTransitioning = false
-
-            runButton.isSimulating = false
-            window.simulationRunning = false
-
-            statusBarManager.simulationComplete(metrics.numSimulations)
+            function onSimulationStopped() {
+                runButton.isSimulating = false
+                window.simulationRunning = false
+                statusBarManager.setIdle()
+            }
         }
 
-        function onSimulationFailed(error) {
-            runButton.isSimulating = false
-            window.simulationRunning = false
-            statusBarManager.setError(error)
+    function clearGraphData() {
+               if (typeof medianSeries !== "undefined") {
+                   medianSeries.clear()
+                   confidenceSeries.clear()
+                   sample0.clear()
+                   sample1.clear()
+                   sample2.clear()
+                   sample3.clear()
+                   sample4.clear()
+               }
         }
-
-        function onSimulationStopped() {
-            runButton.isSimulating = false
-            window.simulationRunning = false
-            statusBarManager.setIdle()
-        }
-    }
 
   }
 

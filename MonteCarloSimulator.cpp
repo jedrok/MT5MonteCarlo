@@ -1,6 +1,7 @@
 #include "MonteCarloSimulator.h"
 #include <QDebug>
 #include <QVariantMap>
+#include <QVariantList>
 #include <algorithm>
 #include <numeric>
 #include <cmath>
@@ -13,7 +14,11 @@ MonteCarloSimulator::MonteCarloSimulator(QObject *parent)
     m_generator = std::mt19937(rd());
 }
 
-void MonteCarloSimulator::runSimulation(const QVector<double> &outcomes, double initialBalance, int numSimulations, bool randomizeOrder) {
+void MonteCarloSimulator::runSimulation(const QVector<double> &outcomes,
+                                        double initialBalance,
+                                        int numSimulations,
+                                        bool randomizeOrder,
+                                        double confidenceLevel) {
     if (outcomes.isEmpty()) {
         emit simulationFailed("No trade data available");
         return;
@@ -50,10 +55,8 @@ void MonteCarloSimulator::runSimulation(const QVector<double> &outcomes, double 
             }
         }
 
-        AggregatedMetrics metrics = aggregateResults(results, outcomes.size());
-
+        AggregatedMetrics metrics = aggregateResults(results, outcomes.size(), initialBalance, confidenceLevel);
         QVariantMap metricsMap = metricsToVariantMap(metrics);
-
         emit simulationComplete(metricsMap);
 
     } catch (const std::exception &e) {
@@ -87,7 +90,7 @@ MonteCarloSimulator::runSingleSimulation(const QVector<double> &outcomes, double
     QVector<double> losses;
     QVector<double> returns;
 
-    result.equityCurve.append(balance);     //initial balance
+    result.equityCurve.append(balance); // trade 0
 
     for (double outcome : outcomes) {
         balance += outcome;
@@ -130,7 +133,6 @@ MonteCarloSimulator::runSingleSimulation(const QVector<double> &outcomes, double
     result.riskRewardRatio = (result.avgLoss != 0) ? result.avgWin / result.avgLoss : 0;
     result.profitFactor = (grossLoss != 0) ? grossProfit / grossLoss : 0;
 
-    // sharpe ratio based on 252 days
     if (!returns.isEmpty()) {
         double meanReturn = std::accumulate(returns.begin(), returns.end(), 0.0) / returns.size();
         double variance = 0;
@@ -142,13 +144,13 @@ MonteCarloSimulator::runSingleSimulation(const QVector<double> &outcomes, double
     } else {
         result.sharpeRatio = 0;
     }
-    result.calmarRatio = (maxDrawdownPercent != 0) ? std::abs(result.returnPercent / maxDrawdownPercent) : 0;
+    result.calmarRatio = (maxDrawdownPercent > 0.001) ? std::abs(result.returnPercent / maxDrawdownPercent) : 0;
 
     return result;
 }
 
 MonteCarloSimulator::AggregatedMetrics
-MonteCarloSimulator::aggregateResults(const QVector<SimulationResult> &results, int totalTrades) {
+MonteCarloSimulator::aggregateResults(const QVector<SimulationResult> &results, int totalTrades, double initialBalance, double confidenceLevel) {
     AggregatedMetrics metrics;
     metrics.numSimulations = results.size();
     metrics.totalTrades = totalTrades;
@@ -166,6 +168,10 @@ MonteCarloSimulator::aggregateResults(const QVector<SimulationResult> &results, 
     double totalWins = 0;
     double largestWin = 0;
 
+    double globalMinY = initialBalance;
+    double globalMaxY = initialBalance;
+
+
     for (const auto &result : results) {
         returns.append(result.returnPercent);
         maxDrawdowns.append(result.maxDrawdownPercent);
@@ -177,30 +183,75 @@ MonteCarloSimulator::aggregateResults(const QVector<SimulationResult> &results, 
         avgLosses.append(result.avgLoss);
         finalBalances.append(result.finalBalance);
 
-        totalWins += result.avgWin;
-        if (result.avgWin > largestWin) {
-            largestWin = result.avgWin;
-        }
+        if (result.avgWin > largestWin) largestWin = result.avgWin;
     }
 
+    int pointsToPlot = totalTrades + 1;
+    int step = (pointsToPlot > 500) ? pointsToPlot / 500 : 1;
+
+    for (int t = 0; t < pointsToPlot; t += step) {
+        QVector<double> balancesAtStep;
+        balancesAtStep.reserve(results.size());
+
+        for (const auto& res : results) {
+            if (t < res.equityCurve.size()) {
+                balancesAtStep.append(res.equityCurve[t]);
+            } else {
+                balancesAtStep.append(res.finalBalance);
+            }
+        }
+
+        std::sort(balancesAtStep.begin(), balancesAtStep.end());
+
+        // median-50th
+        double medianVal = balancesAtStep[balancesAtStep.size() / 2];
+
+        double percentile = 100.0 - confidenceLevel;
+        int confIndex = static_cast<int>((percentile / 100.0) * balancesAtStep.size());
+        if (confIndex < 0) confIndex = 0;
+        if (confIndex >= balancesAtStep.size()) confIndex = balancesAtStep.size() - 1;
+        double confVal = balancesAtStep[confIndex];
+
+        metrics.medianCurve.append(QPointF(t, medianVal));
+        metrics.confidenceCurve.append(QPointF(t, confVal));
+
+        // track min/max for axis scaling
+        if (confVal < globalMinY) globalMinY = confVal;
+        if (medianVal > globalMaxY) globalMaxY = medianVal;
+    }
+
+    int sampleCount = std::min(5, (int)results.size());
+    for(int i=0; i<sampleCount; ++i) {
+        QVector<QPointF> curve;
+        const auto& rawCurve = results[i].equityCurve;
+
+        for(int t=0; t<rawCurve.size(); t += step) {
+            curve.append(QPointF(t, rawCurve[t]));
+            if (rawCurve[t] > globalMaxY) globalMaxY = rawCurve[t];
+            if (rawCurve[t] < globalMinY) globalMinY = rawCurve[t];
+        }
+        metrics.sampleCurves.append(curve);
+    }
+
+    metrics.maxX = totalTrades;
+    metrics.minY = globalMinY;
+    metrics.maxY = globalMaxY;
     metrics.medianReturn = calculatePercentile(returns, 50);
     metrics.meanReturn = std::accumulate(returns.begin(), returns.end(), 0.0) / returns.size();
     metrics.bestReturn = calculatePercentile(returns, 99);
     metrics.worstReturn = calculatePercentile(returns, 1);
-
     metrics.medianMaxDrawdown = calculatePercentile(maxDrawdowns, 50);
     metrics.bestMaxDrawdown = calculatePercentile(maxDrawdowns, 5);
     metrics.worstMaxDrawdown = calculatePercentile(maxDrawdowns, 95);
-
     metrics.medianSharpeRatio = calculatePercentile(sharpeRatios, 50);
     metrics.medianProfitFactor = calculatePercentile(profitFactors, 50);
     metrics.medianCalmarRatio = calculatePercentile(calmarRatios, 50);
     metrics.medianWinRate = calculatePercentile(winRates, 50);
-    metrics.valueAtRisk95 = calculatePercentile(returns, 5);  // 5th percentile = 95% VaR
+    metrics.valueAtRisk95 = calculatePercentile(returns, 5);
 
     int ruinCount = 0;
     for (const auto &result : results) {
-        if (result.maxDrawdownPercent > 50) {
+        if (result.maxDrawdownPercent > 90) {
             ruinCount++;
         }
     }
@@ -217,13 +268,10 @@ MonteCarloSimulator::aggregateResults(const QVector<SimulationResult> &results, 
 double MonteCarloSimulator::calculatePercentile(QVector<double> values, double percentile)
 {
     if (values.isEmpty()) return 0;
-
     std::sort(values.begin(), values.end());
-
     int index = static_cast<int>((percentile / 100.0) * values.size());
     if (index >= values.size()) index = values.size() - 1;
     if (index < 0) index = 0;
-
     return values[index];
 }
 
@@ -231,7 +279,6 @@ QVariantMap MonteCarloSimulator::metricsToVariantMap(const AggregatedMetrics &me
 {
     QVariantMap map;
 
-    // overview
     map["numSimulations"] = metrics.numSimulations;
     map["medianReturn"] = metrics.medianReturn;
     map["meanReturn"] = metrics.meanReturn;
@@ -239,24 +286,48 @@ QVariantMap MonteCarloSimulator::metricsToVariantMap(const AggregatedMetrics &me
     map["medianSharpeRatio"] = metrics.medianSharpeRatio;
     map["riskOfRuin"] = metrics.riskOfRuin;
     map["medianCalmarRatio"] = metrics.medianCalmarRatio;
-
-    // returns
     map["bestReturn"] = metrics.bestReturn;
     map["worstReturn"] = metrics.worstReturn;
     map["medianProfitFactor"] = metrics.medianProfitFactor;
-
-    // risk
     map["bestMaxDrawdown"] = metrics.bestMaxDrawdown;
     map["worstMaxDrawdown"] = metrics.worstMaxDrawdown;
     map["valueAtRisk95"] = metrics.valueAtRisk95;
-
-    // trades
     map["totalTrades"] = metrics.totalTrades;
     map["medianWinRate"] = metrics.medianWinRate;
     map["avgRiskReward"] = metrics.avgRiskReward;
     map["expectancyPerTrade"] = metrics.expectancyPerTrade;
     map["avgLoss"] = metrics.avgLoss;
     map["largestWin"] = metrics.largestWin;
+    map["minY"] = metrics.minY;
+    map["maxY"] = metrics.maxY;
+    map["maxX"] = metrics.maxX;
+
+    auto pointToVar = [](const QPointF& p) {
+        QVariantMap m;
+        m["x"] = p.x();
+        m["y"] = p.y();
+        return m;
+    };
+
+    QVariantList medCurveList;
+    for(const auto& p : metrics.medianCurve) medCurveList.append(pointToVar(p));
+    map["medianCurve"] = medCurveList;
+
+    QVariantList confCurveList;
+    for(const auto& p : metrics.confidenceCurve) confCurveList.append(pointToVar(p));
+    map["confidenceCurve"] = confCurveList;
+
+    // sample curves
+    for (int i = 0; i < 5; ++i) {
+        QVariantList singleCurveList;
+        if (i < metrics.sampleCurves.size()) {
+            for(const auto& p : metrics.sampleCurves[i]) {
+                singleCurveList.append(pointToVar(p));
+            }
+        }
+
+        map[QString("sampleCurve%1").arg(i)] = singleCurveList;
+    }
 
     return map;
 }

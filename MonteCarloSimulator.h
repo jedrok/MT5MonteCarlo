@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
+#include <QPointF>
 #include <random>
 
 class MonteCarloSimulator : public QObject
@@ -56,13 +57,20 @@ public:
         double expectancyPerTrade;
         double avgLoss;
         double largestWin;
+
+        // equity curves
+        QVector<QPointF> medianCurve;
+        QVector<QPointF> confidenceCurve;
+        QVector<QVector<QPointF>> sampleCurves;
+
+        // graph bounds
+        double minY;
+        double maxY;
+        int maxX;
     };
 
 public slots:
-    void runSimulation(const QVector<double> &outcomes,
-                       double initialBalance,
-                       int numSimulations,
-                       bool randomizeOrder);
+    void runSimulation(const QVector<double> &outcomes, double initialBalance, int numSimulations, bool randomizeOrder, double confidenceLevel);
     void stopSimulation();
 
 signals:
@@ -72,13 +80,10 @@ signals:
     void simulationStopped();
 
 private:
-    SimulationResult runSingleSimulation(const QVector<double> &outcomes,
-                                         double initialBalance);
-    AggregatedMetrics aggregateResults(const QVector<SimulationResult> &results,
-                                       int totalTrades);
+    SimulationResult runSingleSimulation(const QVector<double> &outcomes, double initialBalance);
+    AggregatedMetrics aggregateResults(const QVector<SimulationResult> &results, int totalTrades, double initialBalance, double confidenceLevel);
     QVariantMap metricsToVariantMap(const AggregatedMetrics &metrics);
     double calculatePercentile(QVector<double> values, double percentile);
-
     bool m_stopRequested;
     std::mt19937 m_generator;
 };
