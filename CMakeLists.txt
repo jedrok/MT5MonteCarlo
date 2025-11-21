@@ -1,30 +1,38 @@
 cmake_minimum_required(VERSION 3.16)
 
+
 project(MT5MonteCarlo VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-list(APPEND CMAKE_PREFIX_PATH "/usr/local")
+set(MACOSX_BUNDLE_ICON_FILE mt5_monte_carlo_icon.icns)
+set(APP_ICON ${CMAKE_SOURCE_DIR}/assets/logo/mt5_monte_carlo_icon.icns)
+# ensure icon is copied into the .app bundle Resources
+set_source_files_properties(${APP_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 
 find_package(Qt6 REQUIRED COMPONENTS
     Quick
     Graphs
 )
+
 find_package(Xlnt REQUIRED)
 
 
 qt_add_executable(appMT5MonteCarlo
+    MACOSX_BUNDLE
     main.cpp
+    ${APP_ICON}
 )
 
 qt_policy(SET QTP0001 OLD)
 
 qt_add_qml_module(appMT5MonteCarlo
     URI MT5MonteCarlo
-    VERSION 1.0
+    VERSION 0.1
     QML_FILES Main.qml
     RESOURCES resources.qrc
     QML_FILES MetricCard.qml
@@ -35,6 +43,10 @@ qt_add_qml_module(appMT5MonteCarlo
     SOURCES MonteCarloSimulator.h
     SOURCES MonteCarloSimulator.cpp
 )
+
+add_custom_target(show_vcpkg_json SOURCES vcpkg.json)
+add_custom_target(show_README.md SOURCES README.md)
+
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

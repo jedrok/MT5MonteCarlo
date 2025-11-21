@@ -10,7 +10,7 @@ This app performs Monte Carlo resampling to simulate thousands of alternative ou
 ## Features
 
 - **Upload MT5 backtest Excel report (.xlsx)**  
-  The app automatically extracts all trades from the file and any other necessary data.
+  The app automatically extracts all trade data from the file and any other necessary data.
 
 - **Monte Carlo Simulation Engine**  
   Currently supports:
@@ -21,7 +21,7 @@ This app performs Monte Carlo resampling to simulate thousands of alternative ou
   - Key performance metrics (Win rate, MDD, Expectancy, Profit Factor, etc.)
 
 - **Clean, modern UI (Qt)**  
-  Fast, lightweight, and intuitive interface designed for retail traders.
+  Fast, lightweight and intuitive interface.
 
 - **Cross-platform (Windows / Linux / MacOS)**
 
