@@ -169,8 +169,8 @@ jobs:
 
           # Copy application icon
           mkdir -p appdir/usr/share/icons/hicolor/256x256/apps
-          cp ../mt5_monte_carlo_icon.png appdir/usr/share/icons/hicolor/256x256/apps/${{env.EXECUTABLE}}.png
-
+          cp ../assets/logo/mt5_monte_carlo_icon.png appdir/usr/share/icons/hicolor/256x256/apps/${{env.EXECUTABLE}}.png
+          
           # Set environment variables for linuxdeploy
           export QML_SOURCES_PATHS=../${{env.QML_DIR}}
           export QMAKE=${{github.workspace}}/Qt/${{env.QT_VERSION}}/linux_gcc_64/bin/qmake
