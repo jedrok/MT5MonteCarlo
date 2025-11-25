@@ -244,6 +244,12 @@ jobs:
         run: |
           cd build
           macdeployqt "${{ env.EXECUTABLE }}.app" -qmldir=../ -verbose=1
+
+      - name: Ad-hoc sign application
+        run: |
+          cd build
+          codesign --force --deep --sign - "${{ env.EXECUTABLE }}.app"
+      
       - name: Create DMG
         run: |
           cd build
