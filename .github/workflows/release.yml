@@ -215,7 +215,7 @@ jobs:
           submodules: recursive
       - name: Install Qt ${{ env.QT_VERSION }}
         run: |
-          pip3 install aqtinstall
+          pip3 install aqtinstall --break-system-packages
           python3 -m aqt install-qt mac desktop ${{ env.QT_VERSION }} clang_64 \
             --outputdir ${{ github.workspace }}/Qt \
             -m qtgraphs qtquick3d qtshadertools
