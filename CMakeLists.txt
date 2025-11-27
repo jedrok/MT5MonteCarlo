@@ -42,6 +42,8 @@ qt_add_qml_module(appMT5MonteCarlo
     SOURCES StatusBarManager.h
     SOURCES MonteCarloSimulator.h
     SOURCES MonteCarloSimulator.cpp
+    RESOURCES assets/logo/mt5_monte_carlo_icon.icns assets/logo/mt5_monte_carlo_icon.png
+    RESOURCES assets/logo/mt5_monte_carlo_icon.icns
 )
 
 add_custom_target(show_vcpkg_json SOURCES vcpkg.json)

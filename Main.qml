@@ -63,9 +63,9 @@ ApplicationWindow  {
 
             Image {
                 id:appLogo
-                width: 20
-                height: 20
-                source: "qrc:/assets/logo/mt5_monte_carlo_logo.svg"
+                width: 30
+                height: 30
+                source: "qrc:/assets/logo/mt5_monte_carlo_icon.png"
                 anchors.verticalCenter: parent.verticalCenter
                 smooth: true
                 fillMode: Image.PreserveAspectFit

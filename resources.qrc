@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/logo/mt5_monte_carlo_logo.svg</file>
         <file>assets/icons/sim_params_icon.svg</file>
         <file>assets/icons/empty_state.svg</file>
         <file>assets/icons/median_return_icon.svg</file>
@@ -22,5 +21,6 @@
         <file>assets/icons/median_max_dd.svg</file>
         <file>assets/icons/best_case_dd.svg</file>
         <file>assets/icons/calmar_ratio.svg</file>
+        <file>assets/logo/mt5_monte_carlo_icon.png</file>
     </qresource>
 </RCC>
