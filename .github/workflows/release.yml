@@ -1,4 +1,4 @@
-
+---
 #--------------------------------------------------------------------------------
 # Workflow configuration
 #--------------------------------------------------------------------------------
@@ -7,7 +7,7 @@ name: Build MT5 Monte Carlo
 on:
   push:
     tags:
-      - "v*" 
+      - "v*"
 
 permissions:
   contents: write
@@ -170,7 +170,7 @@ jobs:
           # Copy application icon
           mkdir -p appdir/usr/share/icons/hicolor/256x256/apps
           cp ../assets/logo/mt5_monte_carlo_icon.png appdir/usr/share/icons/hicolor/256x256/apps/${{env.EXECUTABLE}}.png
-          
+
           # Set environment variables for linuxdeploy
           export QML_SOURCES_PATHS=../${{env.QML_DIR}}
           export QMAKE=${{github.workspace}}/Qt/${{env.QT_VERSION}}/linux_gcc_64/bin/qmake
@@ -183,7 +183,7 @@ jobs:
             --plugin qt \
             --output appimage
 
-      # Create GitHub Release and attach AppImage    
+      # Create GitHub Release and attach AppImage
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -192,9 +192,9 @@ jobs:
           prerelease: false
           body: |
             # MT5 Monte Carlo v${{ env.VERSION }}
-            
+
             Linux AppImage build for x86_64.
-            
+
             ## Installation
             ```bash
                   chmod +x MT5_Monte_Carlo-*.AppImage
@@ -213,13 +213,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install Qt ${{ env.QT_VERSION }} (Universal clang_64 → native arm64 on Apple Silicon)
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: ${{ env.QT_VERSION }}
-          host: mac
-          target: desktop
-          modules: qtgraphs qtquick3d qtshadertools
+      - name: Install Qt ${{ env.QT_VERSION }}
+        run: |
+          pip3 install aqtinstall
+          python3 -m aqt install-qt mac desktop ${{ env.QT_VERSION }} clang_64 \
+            --outputdir ${{ github.workspace }}/Qt \
+            -m qtgraphs qtquick3d qtshadertools
+          echo "${{ github.workspace }}/Qt/${{ env.QT_VERSION }}/macos/bin" >> $GITHUB_PATH
       - name: Install xlnt via vcpkg (ARM64)
         run: |
           git clone https://github.com/microsoft/vcpkg.git
@@ -249,7 +249,7 @@ jobs:
         run: |
           cd build
           codesign --force --deep --sign - "${{ env.EXECUTABLE }}.app"
-      
+
       - name: Create DMG
         run: |
           cd build
@@ -291,7 +291,7 @@ jobs:
           host: windows
           target: desktop
           arch: win64_msvc2022_64
-          modules: 'qtgraphs qtquick3d qtshadertools'
+          modules: "qtgraphs qtquick3d qtshadertools"
       #
       # Setup MSVC compiler
       #
