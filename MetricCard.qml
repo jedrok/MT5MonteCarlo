@@ -14,8 +14,11 @@ Rectangle {
     border.color: "#334155"
     border.width: 1
     radius: 8
+    //Layout.preferredHeight: 70
+    Layout.fillHeight: true
     Layout.fillWidth: true
-    Layout.preferredHeight: 70
+    Layout.minimumHeight: 50
+
 
     ColumnLayout {
         anchors.fill: parent

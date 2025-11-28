@@ -1206,19 +1206,12 @@ ApplicationWindow  {
                              Layout.fillHeight: true
                              currentIndex: tabGroup.checkedButton ? tabGroup.buttons.indexOf(tabGroup.checkedButton) : 0
 
-                             Flickable {
-                                 id: overviewPage
-                                 clip: true
-                                 contentHeight: overviewLayout.height
-                                 Layout.fillWidth: true
-                                 Layout.fillHeight: true
 
                                  ColumnLayout {
                                      id: overviewLayout
-                                     anchors.fill: parent
-                                     anchors.leftMargin: 10
-                                     anchors.rightMargin: 10
-                                     spacing: 15
+                                     Layout.fillWidth: true
+                                     Layout.fillHeight: true
+                                     spacing: 8
 
                                      MetricCard {
                                          title: "Simulations Run"
@@ -1262,22 +1255,14 @@ ApplicationWindow  {
                                          iconSource: "qrc:/assets/icons/calmar_ratio.svg"
                                      }
                                  }
-                             }
 
 
-                             Flickable {
-                                 id: returnsLayout
-                                 clip: true
-                                 contentHeight: returnsColumn.height
-                                 Layout.fillWidth: true
-                                 Layout.fillHeight: true
 
                                  ColumnLayout {
                                      id: returnsColumn
-                                     anchors.fill: parent
-                                     anchors.leftMargin: 10
-                                     anchors.rightMargin: 10
-                                     spacing: 15
+                                     Layout.fillWidth: true
+                                     Layout.fillHeight: true
+                                     spacing: 8
 
                                      MetricCard {
                                          title: "Median Return"
@@ -1321,21 +1306,15 @@ ApplicationWindow  {
                                          iconSource: "qrc:/assets/icons/sharpe_ratio_metric_icon.svg"
                                      }
                                  }
-                             }
 
-                             Flickable {
-                                 id: riskLayout
-                                 clip: true
-                                 contentHeight: riskColumn.height
-                                 Layout.fillWidth: true
-                                 Layout.fillHeight: true
+
+
 
                                  ColumnLayout {
                                      id: riskColumn
-                                     anchors.fill: parent
-                                     anchors.leftMargin: 10
-                                     anchors.rightMargin: 10
-                                     spacing: 15
+                                     Layout.fillWidth: true
+                                     Layout.fillHeight: true
+                                     spacing: 8
 
                                      MetricCard {
                                          title: "Median Max Drawdown"
@@ -1379,22 +1358,14 @@ ApplicationWindow  {
                                          iconSource: "qrc:/assets/icons/calmar_ratio.svg"
                                      }
                                  }
-                             }
 
 
-                             Flickable {
-                                 id: tradesLayout
-                                 clip: true
-                                 contentHeight: tradesColumn.height
-                                 Layout.fillWidth: true
-                                 Layout.fillHeight: true
 
                                  ColumnLayout {
                                      id: tradesColumn
-                                     anchors.fill: parent
-                                     anchors.leftMargin: 10
-                                     anchors.rightMargin: 10
-                                     spacing: 15
+                                     Layout.fillWidth: true
+                                     Layout.fillHeight: true
+                                     spacing: 8
 
                                      MetricCard {
                                          title: "Total Trades"
@@ -1438,7 +1409,6 @@ ApplicationWindow  {
                                          iconSource: "qrc:/assets/icons/arrow_outward_icon.svg"
                                      }
                                  }
-                             }
 
                          }
                      }
